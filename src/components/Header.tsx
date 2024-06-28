@@ -8,7 +8,7 @@ export function Header() {
 
   useEffect(() => {
     // Join the room (replace with your logic for determining userId or friendId)
-    const userId = "user123"; // Replace with actual user ID logic
+    const userId = localStorage.getItem("id"); // Replace with actual user ID logic
     socket.emit(EventType.USER_JOIN_ROOM, userId);
 
     // Listen for FRIENDSHIP_REQUEST event

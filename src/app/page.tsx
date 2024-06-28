@@ -41,7 +41,7 @@ export default function Home() {
 
   const handleFriendshipRequest = async (friendId: string) => {
     try {
-      const frienshipRequestResponse = sendFriendshipRequest(friendId);
+      const frienshipRequestResponse = await sendFriendshipRequest(friendId);
       console.log({ frienshipRequestResponse });
       alert("Friendship request sent!");
     } catch (error) {

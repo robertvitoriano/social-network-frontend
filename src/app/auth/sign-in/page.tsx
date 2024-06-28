@@ -20,6 +20,8 @@ const Login: React.FC = () => {
   const onSubmit = async (data: LoginFormInputs) => {
     const signInResponse = await signIn(data);
     localStorage.setItem("token", signInResponse.data.token);
+    localStorage.setItem("id", signInResponse.data.user.id);
+
     router.push("/");
   };
 
