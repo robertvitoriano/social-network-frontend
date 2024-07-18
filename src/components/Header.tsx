@@ -3,9 +3,15 @@ import { Bell } from "lucide-react";
 import { useState, useEffect } from "react";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
+import { Sidebar } from "./Sidebar";
+import { set } from "react-hook-form";
 export function Header() {
   const [notifications, setNotifications] = useState<string[]>([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev);
+  };
   useEffect(() => {
     const userId = localStorage.getItem("id");
     socket.emit(EventType.USER_JOIN_ROOM, userId);
@@ -26,11 +32,18 @@ export function Header() {
     <div className="flex gap-4 p-4 w-full bg-gray-400 text-white font-bold justify-between">
       <h1>HEADER</h1>
       <div className="relative">
-        <Bell />
+        <Bell onClick={toggleSidebar} />
         {notifications.length > 0 && (
           <div className="h-3 w-3 rounded-full bg-red-500 absolute top-0 z-40 right-0"></div>
         )}
       </div>
+      {isSidebarOpen && (
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={toggleSidebar}
+          notifications={notifications}
+        />
+      )}
     </div>
   );
 }
