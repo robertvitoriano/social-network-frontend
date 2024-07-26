@@ -48,7 +48,10 @@ const UpdateProfileModal: React.FC<{
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog
+      open={open}
+      onOpenChange={(isOpen: boolean) => !isOpen && onClose()}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Update Profile</DialogTitle>
