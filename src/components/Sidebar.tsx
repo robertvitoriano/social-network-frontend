@@ -1,9 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import socket from "../api/websocket-service";
-import { EventType } from "@/enums/websocket-events";
-
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;

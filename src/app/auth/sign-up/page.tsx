@@ -22,9 +22,7 @@ const SignUp: React.FC = () => {
   const password = watch("password");
 
   const onSubmit = async (data: SignUpFormInputs) => {
-    const signUpResponse = await signUp(data);
-    console.log({ signUpResponse });
-    // Handle sign-up logic here
+    await signUp(data);
   };
 
   return (
