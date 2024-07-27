@@ -2,13 +2,7 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { updateUserProfile } from "@/api/update-user-profile"; // Replace with your API call
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
 export type UpdateProfileFormInputs = {
   name: string;

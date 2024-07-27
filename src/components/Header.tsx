@@ -4,18 +4,20 @@ import { useState, useEffect } from "react";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
 import { Sidebar } from "./Sidebar";
-import { set } from "react-hook-form";
 import { listUserNotifications } from "@/api/list-user-notifications";
 import UpdateProfileModal from "./UpdateProfileModal";
+import { useAuthStore } from "@/lib/store/authStore";
 export function Header() {
   const [notifications, setNotifications] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openUpdateProfileModal, setOpenUpdateProfileModal] = useState(false);
+
+  const loggedUser = useAuthStore((state) => state.loggedUser);
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
   useEffect(() => {
-    const userId = localStorage.getItem("id");
+    const userId = loggedUser.id;
     socket.emit(EventType.USER_JOIN_ROOM, userId);
 
     socket.on(EventType.FRIENDSHIP_REQUEST, (notification: string) => {

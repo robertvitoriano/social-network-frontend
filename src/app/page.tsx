@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { listNonFriends } from "@/api/list-non-friends";
 import { sendFriendshipRequest } from "@/api/send-friendship-request";
+import { useAuthStore } from "@/lib/store/authStore";
 
 interface User {
   id: string;
@@ -15,18 +16,21 @@ interface User {
 }
 
 export default function Home() {
-  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const token = useAuthStore((state) => state.token);
+  const rehydrated = useAuthStore((state) => state.rehydrated);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    if (!rehydrated) return;
+
     if (!token) {
       router.push("/auth/sign-in");
     } else {
       fetchUsers();
     }
-  }, [router]);
+  }, [token, rehydrated]);
 
   const fetchUsers = async () => {
     try {
@@ -49,7 +53,7 @@ export default function Home() {
     }
   };
 
-  if (loading) {
+  if (!rehydrated || loading) {
     return <div>Loading...</div>;
   }
 

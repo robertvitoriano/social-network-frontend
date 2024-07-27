@@ -3,12 +3,16 @@ import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { signIn } from "@/api/sign-in";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/lib/store/authStore";
 type LoginFormInputs = {
   email: string;
   password: string;
 };
 
 const Login: React.FC = () => {
+  const setLoggedUser = useAuthStore((state: any) => state.setLoggedUser);
+  const setToken = useAuthStore((state: any) => state.setToken);
+
   const {
     register,
     handleSubmit,
@@ -19,9 +23,8 @@ const Login: React.FC = () => {
 
   const onSubmit = async (data: LoginFormInputs) => {
     const signInResponse = await signIn(data);
-    localStorage.setItem("token", signInResponse.data.token);
-    localStorage.setItem("id", signInResponse.data.user.id);
-
+    setLoggedUser(signInResponse.data.user);
+    setToken(signInResponse.data.token);
     router.push("/");
   };
 
