@@ -1,15 +1,17 @@
 "use client";
 
+import NotificationRenderer from "./NotificationRenderer";
+
 interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
-  notifications: string[];
+  notifications: any[];
 }
 
 export function Sidebar({ isOpen, onClose, notifications }: SidebarProps) {
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-64 bg-gray-800 text-white transform transition-transform ${
+      className={`fixed top-0 right-0 h-full w-fit bg-gray-800 text-white transform transition-transform ${
         isOpen ? "translate-x-0" : "translate-x-full"
       }`}
     >
@@ -26,7 +28,7 @@ export function Sidebar({ isOpen, onClose, notifications }: SidebarProps) {
           <ul>
             {notifications.map((notification, index) => (
               <li key={index} className="mb-2">
-                {"notification"}
+                <NotificationRenderer notification={notification} />
               </li>
             ))}
           </ul>

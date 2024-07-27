@@ -35,7 +35,7 @@ export function Header() {
   }, []);
   async function loadNotifications() {
     const notificationsResponse = await listUserNotifications();
-    console.log({ notificationsResponse });
+    setNotifications(notificationsResponse.data.userNotifications);
   }
   return (
     <div className="flex gap-4 p-2 w-full bg-gray-400 text-white font-bold justify-between">
@@ -47,7 +47,7 @@ export function Header() {
       />
       <div className="relative">
         <Bell onClick={toggleSidebar} />
-        {notifications.length > 0 && (
+        {notifications.length > 0 && !isSidebarOpen && (
           <div className="h-3 w-3 rounded-full bg-red-500 absolute top-0 z-40 right-0"></div>
         )}
       </div>
