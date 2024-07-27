@@ -1,6 +1,7 @@
+import { LoggedUser } from "@/lib/store/authStore";
 import { api } from "./api";
 
-export interface updateFields {
+export interface UpdateFields {
   email: string;
   password: string;
   name: string;
@@ -14,7 +15,7 @@ export async function updateUserProfile({
   password,
   name,
   username,
-}: updateFields) {
+}: UpdateFields): Promise<LoggedUser | void> {
   const formData = new FormData();
   formData.append("name", name);
   formData.append("email", email);
@@ -24,14 +25,10 @@ export async function updateUserProfile({
     formData.append("avatar", avatar[0]);
   }
 
-  try {
-    const signUpResponse = await api.patch("/users", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    console.log({ signUpResponse });
-  } catch (error) {
-    console.error("Error updating user profile:", error);
-  }
+  const signUpResponse = await api.patch("/users", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return signUpResponse.data.user;
 }

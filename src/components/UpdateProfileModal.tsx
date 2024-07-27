@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { updateUserProfile } from "@/api/update-user-profile"; // Replace with your API call
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { useAuthStore } from "@/lib/store/authStore";
+import { LoggedUser, useAuthStore } from "@/lib/store/authStore";
 
 export type UpdateProfileFormInputs = {
   name: string;
@@ -23,7 +23,13 @@ const UpdateProfileModal: React.FC<{
     setValue,
   } = useForm<UpdateProfileFormInputs>();
   const loggedUser = useAuthStore((state) => state.loggedUser);
-  const [avatar, setAvatar] = useState<FileList>();
+  const setLoggedUser = useAuthStore((state) => state.setLoggedUser);
+
+  const [avatarURL, setAvatarURL] = useState<string | null>(
+    loggedUser.avatar || ""
+  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     setValue("name", loggedUser.name);
     setValue("email", loggedUser.email);
@@ -31,10 +37,23 @@ const UpdateProfileModal: React.FC<{
   }, [loggedUser, setValue]);
 
   const onSubmit = async (data: UpdateProfileFormInputs) => {
-    await updateUserProfile({ ...data, avatar });
+    const avatar = fileInputRef.current?.files;
+
+    const { name, username, email } = data;
+    if (!avatar) return;
+    setLoggedUser({ ...loggedUser, name, username, email, avatar: avatarURL! });
+    updateUserProfile({ ...data, avatar })
+      .then((updatedUser) => {
+        if (updatedUser) {
+          setLoggedUser(updatedUser);
+        }
+      })
+      .catch(() => {
+        setLoggedUser(loggedUser);
+      });
+
     onClose();
   };
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleOpenFilePicker = () => {
     fileInputRef.current?.click();
@@ -42,8 +61,11 @@ const UpdateProfileModal: React.FC<{
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      console.log(event.target.files);
-      setAvatar(event.target.files);
+      const file = event.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        setAvatarURL(url);
+      }
     }
   };
 
@@ -103,7 +125,7 @@ const UpdateProfileModal: React.FC<{
           <div className="mb-4 relative">
             <div
               style={{
-                backgroundImage: `url(${loggedUser.avatar})`,
+                backgroundImage: `url(${avatarURL})`,
               }}
               className="h-32 w-32 bg-cover bg-center bg-black rounded-full border-4 border-secondary border-solid cursor-pointer"
             >
