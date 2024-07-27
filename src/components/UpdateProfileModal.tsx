@@ -34,6 +34,7 @@ const UpdateProfileModal: React.FC<{
     setValue("name", loggedUser.name);
     setValue("email", loggedUser.email);
     setValue("username", loggedUser.username);
+    setAvatarURL(loggedUser.avatar);
   }, [loggedUser, setValue]);
 
   const onSubmit = async (data: UpdateProfileFormInputs) => {
