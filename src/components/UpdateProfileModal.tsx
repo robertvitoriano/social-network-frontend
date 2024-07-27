@@ -42,6 +42,7 @@ const UpdateProfileModal: React.FC<{
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
+      console.log(event.target.files);
       setAvatar(event.target.files);
     }
   };
@@ -102,10 +103,7 @@ const UpdateProfileModal: React.FC<{
           <div className="mb-4 relative">
             <div
               style={{
-                backgroundImage: `url(${
-                  loggedUser.avatar ||
-                  "https://m.media-amazon.com/images/I/71klfKWvYhL._SY466_.jpg"
-                })`,
+                backgroundImage: `url(${loggedUser.avatar})`,
               }}
               className="h-32 w-32 bg-cover bg-center bg-black rounded-full border-4 border-secondary border-solid cursor-pointer"
             >
@@ -121,7 +119,7 @@ const UpdateProfileModal: React.FC<{
                     ref={fileInputRef}
                     id="avatar"
                     type="file"
-                    className="w-full h-full hidden cursor-pointer"
+                    className="hidden"
                     onChange={handleFileChange}
                   />
                 </label>
