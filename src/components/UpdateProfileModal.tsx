@@ -1,8 +1,8 @@
-"use client";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
 import { updateUserProfile } from "@/api/update-user-profile"; // Replace with your API call
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+import { useAuthStore } from "@/lib/store/authStore";
 
 export type UpdateProfileFormInputs = {
   name: string;
@@ -11,34 +11,39 @@ export type UpdateProfileFormInputs = {
   password: string;
   avatar: FileList;
 };
-export type UserFields = {
-  name: string;
-  email: string;
-  username: string;
-  password: string;
-  avatar: string;
-};
+
 const UpdateProfileModal: React.FC<{
-  user: UserFields;
   onClose: () => void;
   open: boolean;
-}> = ({ user, onClose, open }) => {
+}> = ({ onClose, open }) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
   } = useForm<UpdateProfileFormInputs>();
-
+  const loggedUser = useAuthStore((state) => state.loggedUser);
+  const [avatar, setAvatar] = useState<FileList>();
   useEffect(() => {
-    setValue("name", user.name);
-    setValue("email", user.email);
-    setValue("username", user.username);
-  }, [user]);
+    setValue("name", loggedUser.name);
+    setValue("email", loggedUser.email);
+    setValue("username", loggedUser.username);
+  }, [loggedUser, setValue]);
 
   const onSubmit = async (data: UpdateProfileFormInputs) => {
-    await updateUserProfile({ ...data });
+    await updateUserProfile({ ...data, avatar });
     onClose();
+  };
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleOpenFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setAvatar(event.target.files);
+    }
   };
 
   return (
@@ -73,9 +78,7 @@ const UpdateProfileModal: React.FC<{
             <input
               id="username"
               type="text"
-              {...register("username", {
-                required: "Username is required",
-              })}
+              {...register("username", { required: "Username is required" })}
               className="w-full px-3 py-2 border text-black border-gray-300 rounded"
             />
             {errors.username && (
@@ -96,17 +99,36 @@ const UpdateProfileModal: React.FC<{
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="avatar">
-              Avatar
-            </label>
-            <input
-              id="avatar"
-              type="file"
-              {...register("avatar")}
-              className="w-full px-3 py-2 border text-black border-gray-300 rounded"
-            />
+          <div className="mb-4 relative">
+            <div
+              style={{
+                backgroundImage: `url(${
+                  loggedUser.avatar ||
+                  "https://m.media-amazon.com/images/I/71klfKWvYhL._SY466_.jpg"
+                })`,
+              }}
+              className="h-32 w-32 bg-cover bg-center bg-black rounded-full border-4 border-secondary border-solid cursor-pointer"
+            >
+              <div
+                className=" w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300"
+                onClick={handleOpenFilePicker}
+              >
+                <span className="text-white text-lg text-center">
+                  Change avatar
+                </span>
+                <label htmlFor="avatar">
+                  <input
+                    ref={fileInputRef}
+                    id="avatar"
+                    type="file"
+                    className="w-full h-full hidden cursor-pointer"
+                    onChange={handleFileChange}
+                  />
+                </label>
+              </div>
+            </div>
           </div>
+
           <div className="flex justify-between items-center">
             <button
               type="submit"
