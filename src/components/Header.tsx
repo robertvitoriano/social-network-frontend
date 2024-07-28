@@ -33,12 +33,23 @@ export function Header() {
       ]);
     };
 
+    const handleFriendshipAccepted = (
+      receveidFriendshipRequestNotification: any
+    ) => {
+      setNotifications([
+        ...notifications,
+        receveidFriendshipRequestNotification,
+      ]);
+    };
+
     socket.on(EventType.FRIENDSHIP_REQUEST, handleFriendshipRequest);
+    socket.on(EventType.FRIENDSHIP_ACCEPTED, handleFriendshipAccepted);
 
     loadNotifications();
 
     return () => {
       socket.off(EventType.FRIENDSHIP_REQUEST, handleFriendshipRequest);
+      socket.off(EventType.FRIENDSHIP_ACCEPTED, handleFriendshipAccepted);
     };
   }, [loggedUser.id]);
 
