@@ -11,14 +11,17 @@ interface NotificationRendererProps {
 const NotificationRenderer: React.FC<NotificationRendererProps> = ({
   notification,
 }) => {
-  switch (notification.type) {
-    case NotificationTypes.FRIENDSHIP_REQUEST.label:
-      return <FriendshipRequestNotification notification={notification} />;
-    case NotificationTypes.FRIENDSHIP_ACCEPTED.label:
-      return <FriendshipAcceptedNotification notification={notification} />;
-    default:
-      return null;
-  }
+  return (
+    <>
+      {notification.type === NotificationTypes.FRIENDSHIP_REQUEST.label && (
+        <FriendshipRequestNotification notification={notification} />
+      )}
+
+      {notification.type === NotificationTypes.FRIENDSHIP_ACCEPTED.label && (
+        <FriendshipAcceptedNotification notification={notification} />
+      )}
+    </>
+  );
 };
 
 export default NotificationRenderer;
