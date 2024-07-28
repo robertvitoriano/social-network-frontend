@@ -3,6 +3,7 @@
 import { sendFriendshipResponse } from "@/api/send-friendship-response";
 import { FriendshipStatus } from "@/enums/friendship-status";
 import { Check } from "lucide-react";
+import { useState } from "react";
 
 interface FriendshipRequestNotificationProps {
   notification: any;
@@ -11,49 +12,54 @@ interface FriendshipRequestNotificationProps {
 export const FriendshipRequestNotification: React.FC<
   FriendshipRequestNotificationProps
 > = ({ notification }) => {
+  const [frienshipRequestWasAccepeted, setFrienshipRequestWasAccepeted] =
+    useState<boolean>();
   async function handleFriendshipResponse(friendId: string, status: string) {
+    setFrienshipRequestWasAccepeted(true);
     await sendFriendshipResponse(friendId, status);
   }
   return (
     <div className="flex p-4 gap-4 bg-blue-500 rounded items-center text-white">
       <img className="h-14 w-14 rounded-full" src={notification.senderAvatar} />
 
-      {notification.friendshipRequestStatus === FriendshipStatus.PENDING && (
-        <div className="flex flex-1 flex-col gap-2 pt-2">
-          <span className="text-sm">
-            {notification.senderName} wants to be your friend!
-          </span>
-          <div className="flex justify-around">
-            <div className="p-2 ">
-              <span
-                className="cursor-pointer hover:underline"
-                onClick={() =>
-                  handleFriendshipResponse(
-                    notification.senderId,
-                    FriendshipStatus.REJECTED
-                  )
-                }
-              >
-                Ignore
-              </span>
-            </div>
-            <div className="text-primary p-2 border-2 border-primary rounded-full">
-              <span
-                className="cursor-pointer"
-                onClick={() =>
-                  handleFriendshipResponse(
-                    notification.senderId,
-                    FriendshipStatus.ACCEPTED
-                  )
-                }
-              >
-                Accept
-              </span>
+      {notification.friendshipRequestStatus === FriendshipStatus.PENDING &&
+        !frienshipRequestWasAccepeted && (
+          <div className="flex flex-1 flex-col gap-2 pt-2">
+            <span className="text-sm">
+              {notification.senderName} wants to be your friend!
+            </span>
+            <div className="flex justify-around">
+              <div className="p-2 ">
+                <span
+                  className="cursor-pointer hover:underline"
+                  onClick={() =>
+                    handleFriendshipResponse(
+                      notification.senderId,
+                      FriendshipStatus.REJECTED
+                    )
+                  }
+                >
+                  Ignore
+                </span>
+              </div>
+              <div className="text-primary p-2 border-2 border-primary rounded-full">
+                <span
+                  className="cursor-pointer"
+                  onClick={() =>
+                    handleFriendshipResponse(
+                      notification.senderId,
+                      FriendshipStatus.ACCEPTED
+                    )
+                  }
+                >
+                  Accept
+                </span>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-      {notification.friendshipRequestStatus === FriendshipStatus.ACCEPTED && (
+        )}
+      {(notification.friendshipRequestStatus === FriendshipStatus.ACCEPTED ||
+        frienshipRequestWasAccepeted) && (
         <div className="flex flex-1 flex-col gap-2 pt-2">
           <span className="text-sm">
             {notification.senderName} Is now your friend!
