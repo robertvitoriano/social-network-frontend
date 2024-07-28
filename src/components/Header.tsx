@@ -7,6 +7,7 @@ import { Sidebar } from "./Sidebar";
 import { listUserNotifications } from "@/api/list-user-notifications";
 import UpdateProfileModal from "./UpdateProfileModal";
 import { useAuthStore } from "@/lib/store/authStore";
+
 export function Header() {
   const [notifications, setNotifications] = useState<string[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -16,27 +17,39 @@ export function Header() {
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
+
   useEffect(() => {
+    if (!loggedUser.id) return;
+
     const userId = loggedUser.id;
     socket.emit(EventType.USER_JOIN_ROOM, userId);
 
-    socket.on(EventType.FRIENDSHIP_REQUEST, (notification: string) => {
+    const handleFriendshipRequest = (notification: string) => {
+      console.log({ notificationByWebSocket: notification });
       setNotifications((prevNotifications) => [
         ...prevNotifications,
         notification,
       ]);
-    });
+    };
+
+    socket.on(EventType.FRIENDSHIP_REQUEST, handleFriendshipRequest);
 
     loadNotifications();
 
     return () => {
-      socket.off(EventType.FRIENDSHIP_REQUEST);
+      socket.off(EventType.FRIENDSHIP_REQUEST, handleFriendshipRequest);
     };
-  }, []);
+  }, [loggedUser.id]);
+
   async function loadNotifications() {
-    const notificationsResponse = await listUserNotifications();
-    setNotifications(notificationsResponse.data.userNotifications);
+    try {
+      const notificationsResponse = await listUserNotifications();
+      setNotifications(notificationsResponse.data.userNotifications);
+    } catch (error) {
+      console.error("Failed to load notifications", error);
+    }
   }
+
   return (
     <div className="flex gap-4 p-2 w-full bg-gray-400 text-white font-bold justify-between">
       <img

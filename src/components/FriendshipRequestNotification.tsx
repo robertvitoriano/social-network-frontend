@@ -1,5 +1,8 @@
 "use client";
 
+import { sendFriendshipResponse } from "@/api/send-friendship-response";
+import { FriendshipStatus } from "@/enums/friendship-status";
+
 interface FriendshipRequestNotificationProps {
   notification: any;
 }
@@ -7,6 +10,9 @@ interface FriendshipRequestNotificationProps {
 export const FriendshipRequestNotification: React.FC<
   FriendshipRequestNotificationProps
 > = ({ notification }) => {
+  async function handleFriendshipResponse(friendId: string, status: string) {
+    await sendFriendshipResponse(friendId, status);
+  }
   return (
     <div className="flex p-4 gap-4 bg-blue-500 rounded items-center text-white">
       <img className="h-14 w-14 rounded-full" src={notification.senderAvatar} />
@@ -15,11 +21,31 @@ export const FriendshipRequestNotification: React.FC<
           {notification.senderName} wants to be your friend!
         </span>
         <div className="flex justify-around">
-          <div className="hover:bg-primary p-4 hover:rounded-lg">
-            <span className="cursor-pointer">Accept</span>
+          <div className="p-2 ">
+            <span
+              className="cursor-pointer"
+              onClick={() =>
+                handleFriendshipResponse(
+                  notification.senderId,
+                  FriendshipStatus.REJECTED
+                )
+              }
+            >
+              Ignore
+            </span>
           </div>
-          <div className="hover:bg-primary p-4 hover:rounded-lg">
-            <span className="cursor-pointer">Reject</span>
+          <div className="text-primary p-2 border-2 border-primary rounded-full">
+            <span
+              className="cursor-pointer"
+              onClick={() =>
+                handleFriendshipResponse(
+                  notification.senderId,
+                  FriendshipStatus.ACCEPTED
+                )
+              }
+            >
+              Accept
+            </span>
           </div>
         </div>
       </div>

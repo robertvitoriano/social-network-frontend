@@ -12,5 +12,4 @@ export async function signUp({ email, password, name, username }: signUpBody) {
     name,
     username,
   });
-  console.log({ signUpResponse });
 }
