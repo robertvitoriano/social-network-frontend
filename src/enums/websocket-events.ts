@@ -1,5 +1,5 @@
 export enum EventType {
-  FRIENDSHIP_REQUEST = "friendship_request",
-  FRIENDSHIP_ACCEPTED = "friendship_accepted",
-  USER_JOIN_ROOM = "user_join_room",
+  FRIENDSHIP_REQUEST = "FRIENDSHIP_REQUEST",
+  FRIENDSHIP_ACCEPTED = "FRIENDSHIP_ACCEPTED",
+  USER_JOIN_ROOM = "USER_JOIN_ROOM",
 }

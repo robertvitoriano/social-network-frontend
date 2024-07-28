@@ -27,10 +27,6 @@ export function Header() {
     const handleFriendshipRequest = (
       receveidFriendshipRequestNotification: any
     ) => {
-      console.log({
-        receveidFriendshipRequestNotificationByWebSocket:
-          receveidFriendshipRequestNotification,
-      });
       setNotifications([
         ...notifications,
         receveidFriendshipRequestNotification,
