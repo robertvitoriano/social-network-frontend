@@ -9,7 +9,7 @@ import UpdateProfileModal from "./UpdateProfileModal";
 import { useAuthStore } from "@/lib/store/authStore";
 
 export function Header() {
-  const [notifications, setNotifications] = useState<string[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openUpdateProfileModal, setOpenUpdateProfileModal] = useState(false);
 
@@ -24,11 +24,16 @@ export function Header() {
     const userId = loggedUser.id;
     socket.emit(EventType.USER_JOIN_ROOM, userId);
 
-    const handleFriendshipRequest = (notification: string) => {
-      console.log({ notificationByWebSocket: notification });
-      setNotifications((prevNotifications) => [
-        ...prevNotifications,
-        notification,
+    const handleFriendshipRequest = (
+      receveidFriendshipRequestNotification: any
+    ) => {
+      console.log({
+        receveidFriendshipRequestNotificationByWebSocket:
+          receveidFriendshipRequestNotification,
+      });
+      setNotifications([
+        ...notifications,
+        receveidFriendshipRequestNotification,
       ]);
     };
 
@@ -43,8 +48,13 @@ export function Header() {
 
   async function loadNotifications() {
     try {
-      const notificationsResponse = await listUserNotifications();
-      setNotifications(notificationsResponse.data.userNotifications);
+      const notificationResponse = await listUserNotifications();
+      const notificationIds = notifications.map((n) => n.id);
+      const filteredNotifications =
+        notificationResponse.data.userNotifications.filter(
+          (n: any) => !notificationIds.includes(n.id)
+        );
+      setNotifications([...notifications, ...filteredNotifications]);
     } catch (error) {
       console.error("Failed to load notifications", error);
     }

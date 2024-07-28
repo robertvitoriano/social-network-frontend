@@ -23,7 +23,7 @@ export const FriendshipRequestNotification: React.FC<
         <div className="flex justify-around">
           <div className="p-2 ">
             <span
-              className="cursor-pointer"
+              className="cursor-pointer hover:underline"
               onClick={() =>
                 handleFriendshipResponse(
                   notification.senderId,

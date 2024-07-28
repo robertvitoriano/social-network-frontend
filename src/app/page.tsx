@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { listNonFriends } from "@/api/list-non-friends";
 import { sendFriendshipRequest } from "@/api/send-friendship-request";
 import { useAuthStore } from "@/lib/store/authStore";
-import { Send, Clock } from "lucide-react";
+import { Send, Clock, User } from "lucide-react";
+import { FriendshipStatus } from "@/enums/friendship-status";
+import { sendFriendshipResponse } from "@/api/send-friendship-response";
 
 interface NonFriend {
   id: string;
@@ -84,6 +86,40 @@ export default function Home() {
                 <Clock className="mr-2" size={18} />
                 Friendship request pending
               </span>
+            )}
+            {nonFriend.friendshipRequestStatus === "received" && (
+              <div className="flex flex-1 flex-col gap-2 pt-2">
+                <User className="mr-2" size={18} />
+                <span className="text-sm">wants to be your friend!</span>
+                <div className="flex justify-around">
+                  <div className="p-2 ">
+                    <span
+                      className="cursor-pointer hover:underline"
+                      onClick={() =>
+                        sendFriendshipResponse(
+                          nonFriend.id,
+                          FriendshipStatus.REJECTED
+                        )
+                      }
+                    >
+                      Ignore
+                    </span>
+                  </div>
+                  <div className="text-primary p-2 border-2 border-primary rounded-full">
+                    <span
+                      className="cursor-pointer"
+                      onClick={() =>
+                        sendFriendshipResponse(
+                          nonFriend.id,
+                          FriendshipStatus.ACCEPTED
+                        )
+                      }
+                    >
+                      Accept
+                    </span>
+                  </div>
+                </div>
+              </div>
             )}
           </div>
         ))}
