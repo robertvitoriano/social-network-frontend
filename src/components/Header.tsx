@@ -3,19 +3,20 @@ import { Bell } from "lucide-react";
 import { useState, useEffect } from "react";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
-import { Sidebar } from "./Sidebar";
+import { NotificationsPopOver } from "./NotificationsPopOver";
 import { listUserNotifications } from "@/api/list-user-notifications";
 import UpdateProfileModal from "./UpdateProfileModal";
 import { useAuthStore } from "@/lib/store/authStore";
 
 export function Header() {
   const [notifications, setNotifications] = useState<any[]>([]);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNotificationsPopOverOpen, setIsNotificationsPopOverOpen] =
+    useState(false);
   const [openUpdateProfileModal, setOpenUpdateProfileModal] = useState(false);
 
   const loggedUser = useAuthStore((state) => state.loggedUser);
-  const toggleSidebar = () => {
-    setIsSidebarOpen((prev) => !prev);
+  const toggleNotificationsPopOver = () => {
+    setIsNotificationsPopOverOpen((prev) => !prev);
   };
 
   useEffect(() => {
@@ -76,15 +77,15 @@ export function Header() {
         onClick={() => setOpenUpdateProfileModal(true)}
       />
       <div className="relative">
-        <Bell onClick={toggleSidebar} />
-        {notifications.length > 0 && !isSidebarOpen && (
+        <Bell onClick={toggleNotificationsPopOver} />
+        {notifications.length > 0 && !isNotificationsPopOverOpen && (
           <div className="h-3 w-3 rounded-full bg-red-500 absolute top-0 z-40 right-0"></div>
         )}
       </div>
-      {isSidebarOpen && (
-        <Sidebar
-          isOpen={isSidebarOpen}
-          onClose={toggleSidebar}
+      {isNotificationsPopOverOpen && (
+        <NotificationsPopOver
+          isOpen={isNotificationsPopOverOpen}
+          onClose={toggleNotificationsPopOver}
           notifications={notifications}
         />
       )}

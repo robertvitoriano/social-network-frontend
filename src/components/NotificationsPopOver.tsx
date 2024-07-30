@@ -2,13 +2,17 @@
 
 import NotificationRenderer from "./NotificationRenderer";
 
-interface SidebarProps {
+interface NotificationsPopOverProps {
   isOpen: boolean;
   onClose: () => void;
   notifications: any[];
 }
 
-export function Sidebar({ isOpen, onClose, notifications }: SidebarProps) {
+export function NotificationsPopOver({
+  isOpen,
+  onClose,
+  notifications,
+}: NotificationsPopOverProps) {
   return (
     <div
       className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white transform transition-transform ${
