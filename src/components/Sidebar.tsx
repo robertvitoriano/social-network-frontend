@@ -11,8 +11,8 @@ interface SidebarProps {
 export function Sidebar({ isOpen, onClose, notifications }: SidebarProps) {
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-fit bg-gray-800 text-white transform transition-transform ${
-        isOpen ? "translate-x-0" : "translate-x-full"
+      className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white transform transition-transform ${
+        isOpen ? "none" : "block"
       }`}
     >
       <div className="flex justify-between items-center p-4 bg-gray-900">
