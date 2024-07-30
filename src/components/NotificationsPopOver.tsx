@@ -1,23 +1,33 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import NotificationRenderer from "./NotificationRenderer";
+import { readNotifications } from "@/api/read-notifications";
 
 interface NotificationsPopOverProps {
-  isOpen: boolean;
   onClose: () => void;
   notifications: any[];
 }
 
 export function NotificationsPopOver({
-  isOpen,
   onClose,
   notifications,
 }: NotificationsPopOverProps) {
+  useEffect(() => {
+    handleReadNotifications();
+  }, [notifications]);
+
+  async function handleReadNotifications() {
+    const notReadNotificationIds = notifications
+      .filter((notification) => !notification.wasRead)
+      .map((notification) => notification.id);
+    if (notReadNotificationIds.length > 0) {
+      await readNotifications(notReadNotificationIds);
+    }
+  }
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white transform transition-transform ${
-        isOpen ? "none" : "block"
-      }`}
+      className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white transform transition-transform`}
     >
       <div className="flex justify-between items-center p-4 bg-gray-900">
         <h2 className="text-lg font-bold">Notifications</h2>

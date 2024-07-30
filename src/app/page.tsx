@@ -8,6 +8,7 @@ import { useAuthStore } from "@/lib/store/authStore";
 import { Send, Clock, User } from "lucide-react";
 import { FriendshipStatus } from "@/enums/friendship-status";
 import { sendFriendshipResponse } from "@/api/send-friendship-response";
+import { toast } from "sonner";
 
 interface NonFriend {
   id: string;
@@ -47,11 +48,19 @@ export default function Home() {
       setLoading(false);
     }
   };
-
+  const handleFriendshipResponse = async (
+    nonFriendId: string,
+    status: string
+  ) => {
+    toast("Friendship response sent!");
+    await sendFriendshipResponse(nonFriendId, status);
+    await fetchNonFriends();
+  };
   const handleFriendshipRequest = async (friendId: string) => {
     try {
+      toast("Friendship response sent!");
       const frienshipRequestResponse = await sendFriendshipRequest(friendId);
-      alert("Friendship request sent!");
+      await fetchNonFriends();
     } catch (error) {
       console.error("Error sending friendship request:", error);
     }
@@ -62,7 +71,7 @@ export default function Home() {
   }
 
   return (
-    <main className="flex h-screen flex-col p-10">
+    <main className="flex h-screen flex-col p-10 bg-secondary text-white">
       <h1 className="text-center mb-10">nonFriends</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         {nonFriends.map((nonFriend) => (
@@ -96,7 +105,7 @@ export default function Home() {
                     <span
                       className="cursor-pointer hover:underline"
                       onClick={() =>
-                        sendFriendshipResponse(
+                        handleFriendshipResponse(
                           nonFriend.id,
                           FriendshipStatus.REJECTED
                         )
@@ -109,7 +118,7 @@ export default function Home() {
                     <span
                       className="cursor-pointer"
                       onClick={() =>
-                        sendFriendshipResponse(
+                        handleFriendshipResponse(
                           nonFriend.id,
                           FriendshipStatus.ACCEPTED
                         )

@@ -69,7 +69,7 @@ export function Header() {
   }
 
   return (
-    <div className="flex gap-4 p-2 w-full bg-gray-400 text-white font-bold justify-between">
+    <div className="flex gap-4 p-2 w-full bg-primary text-white font-bold justify-between">
       <img
         className="h-8 w-8 rounded-full bg-black cursor-pointer"
         src={loggedUser.avatar}
@@ -84,7 +84,6 @@ export function Header() {
       </div>
       {isNotificationsPopOverOpen && (
         <NotificationsPopOver
-          isOpen={isNotificationsPopOverOpen}
           onClose={toggleNotificationsPopOver}
           notifications={notifications}
         />

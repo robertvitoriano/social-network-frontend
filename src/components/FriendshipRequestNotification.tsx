@@ -2,6 +2,7 @@
 
 import { sendFriendshipResponse } from "@/api/send-friendship-response";
 import { FriendshipStatus } from "@/enums/friendship-status";
+import classNames from "classnames";
 import { Check } from "lucide-react";
 import { useState } from "react";
 
@@ -19,9 +20,22 @@ export const FriendshipRequestNotification: React.FC<
     await sendFriendshipResponse(friendId, status);
   }
   return (
-    <div className="flex p-4 gap-4 bg-blue-500 rounded items-center text-white">
+    <div
+      className={classNames(
+        "flex",
+        "p-4",
+        "gap-4",
+        "rounded",
+        "items-center",
+        "text-white",
+        { "bg-blue-500": !notification.wasRead },
+        { "bg-transparent": notification.wasRead },
+        { "border-white": notification.wasRead },
+        { border: notification.wasRead }
+      )}
+    >
+      {" "}
       <img className="h-14 w-14 rounded-full" src={notification.senderAvatar} />
-
       {notification.friendshipRequestStatus === FriendshipStatus.PENDING &&
         !frienshipRequestWasAccepeted && (
           <div className="flex flex-1 flex-col gap-2 pt-2">
@@ -60,12 +74,12 @@ export const FriendshipRequestNotification: React.FC<
         )}
       {(notification.friendshipRequestStatus === FriendshipStatus.ACCEPTED ||
         frienshipRequestWasAccepeted) && (
-        <div className="flex flex-1 flex-col gap-2 pt-2">
+        <div className="flex flex-1 items-center gap-4 pt-2">
           <span className="text-sm">
             {notification.senderName} Is now your friend!
           </span>
           <div className="flex justify-around">
-            <div className="flex gap-4 text-primary p-2 border-2 bg-secondary border-primary rounded-full ">
+            <div className="flex gap-4 text-white p-2 border-2 bg-secondary border-white primary rounded-full ">
               <Check />
               <span>Accepted</span>
             </div>
