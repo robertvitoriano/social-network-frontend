@@ -7,15 +7,17 @@ import { readNotifications } from "@/api/read-notifications";
 interface NotificationsPopOverProps {
   onClose: () => void;
   notifications: any[];
+  loadNotifications: () => Promise<void>;
 }
 
 export function NotificationsPopOver({
   onClose,
   notifications,
+  loadNotifications,
 }: NotificationsPopOverProps) {
   useEffect(() => {
     handleReadNotifications();
-  }, [notifications]);
+  }, []);
 
   async function handleReadNotifications() {
     const notReadNotificationIds = notifications
@@ -25,13 +27,17 @@ export function NotificationsPopOver({
       await readNotifications(notReadNotificationIds);
     }
   }
+  async function handleClose() {
+    loadNotifications();
+    onClose();
+  }
   return (
     <div
       className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white transform transition-transform`}
     >
       <div className="flex justify-between items-center p-4 bg-gray-900">
         <h2 className="text-lg font-bold">Notifications</h2>
-        <button onClick={onClose} className="text-white">
+        <button onClick={handleClose} className="text-white">
           Close
         </button>
       </div>

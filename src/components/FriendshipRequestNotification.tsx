@@ -56,7 +56,7 @@ export const FriendshipRequestNotification: React.FC<
                   Ignore
                 </span>
               </div>
-              <div className="text-primary p-2 border-2 border-primary rounded-full">
+              <div className="bg-white text-primary p-2 border-2 border-primary rounded-full ">
                 <span
                   className="cursor-pointer"
                   onClick={() =>
