@@ -3,12 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
+import { MessagesSideBar } from "@/components/MessagesSidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Social Network",
-  description: "A simple network created by robert vitoriano",
+  description: "A simple network created by Robert Vitoriano",
 };
 
 export default function RootLayout({
@@ -19,9 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Toaster />
-        <Header />
-        {children}
+        <div className="relative h-full">
+          <Toaster />
+          <Header />
+          <MessagesSideBar />
+          {children}
+        </div>
       </body>
     </html>
   );
