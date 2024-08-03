@@ -1,15 +1,17 @@
 "use client";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { signIn } from "@/api/sign-in";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/authStore";
+
 type LoginFormInputs = {
   email: string;
   password: string;
 };
 
-const Login: React.FC = () => {
+const SignIn: React.FC = () => {
   const setLoggedUser = useAuthStore((state: any) => state.setLoggedUser);
   const setToken = useAuthStore((state: any) => state.setToken);
 
@@ -29,8 +31,8 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-primary p-6 rounded-lg shadow-lg w-full max-w-md text-white">
         <h2 className="text-2xl font-bold mb-4">Login</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
@@ -72,7 +74,7 @@ const Login: React.FC = () => {
               className="hover:underline hover:text-blue-500 cursor-pointer"
               href={"/auth/sign-up"}
             >
-              Don't have account yet ? click here to sign up!
+              Don't have an account yet? Click here to sign up!
             </Link>
           </div>
         </form>
@@ -81,4 +83,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default SignIn;

@@ -72,7 +72,7 @@ export default function Home() {
 
   return (
     <main className="flex h-screen flex-col p-10 bg-secondary text-white">
-      <h1 className="text-center mb-10">nonFriends</h1>
+      <h1 className="text-center mb-10">Sugestions</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         {nonFriends.map((nonFriend) => (
           <div
@@ -132,6 +132,7 @@ export default function Home() {
             )}
           </div>
         ))}
+        {nonFriends.length === 0 && <h1>No friend sugestion for now</h1>}
       </div>
     </main>
   );
