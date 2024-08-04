@@ -33,12 +33,12 @@ export function NotificationsPopOver({
   }
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white transform transition-transform`}
+      className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white z-10`}
     >
       <div className="flex justify-between items-center p-4 bg-gray-900">
         <h2 className="text-lg font-bold">Notifications</h2>
         <button onClick={handleClose} className="text-white">
-          Close
+          X
         </button>
       </div>
       <div className="p-4">
