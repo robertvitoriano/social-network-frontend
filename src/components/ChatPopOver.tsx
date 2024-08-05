@@ -1,15 +1,17 @@
 "use client";
+import { sendChatMessage } from "@/api/send-chat-message";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/lib/store/authStore";
 import classNames from "classnames";
 import { SendHorizontal } from "lucide-react";
-
 import { useEffect, useState } from "react";
+
 export type Receiver = {
   id: string;
   avatar: string;
   name: string;
 };
+
 interface ChatPopOverProps {
   onClose: () => void;
   receiver: Receiver;
@@ -18,6 +20,7 @@ interface ChatPopOverProps {
 export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [messages, setMessages] = useState<any[]>([]);
   const loggedUser = useAuthStore((state) => state.loggedUser);
+  const [currentMessageContent, setCurrentMessageContent] = useState("");
 
   useEffect(() => {
     load();
@@ -62,24 +65,50 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     }));
     setMessages(displayMessages);
   }
+
   async function handleClose() {
     onClose();
   }
+
+  async function handleSendMessage() {
+    if (currentMessageContent.trim() === "") return;
+
+    // await sendChatMessage(receiver.id, currentMessageContent);
+    setMessages([
+      ...messages,
+      {
+        id: "",
+        userId: loggedUser.id,
+        content: currentMessageContent,
+        createdAt: new Date().toLocaleTimeString(),
+        isFromUser: true,
+      },
+    ]);
+    setCurrentMessageContent("");
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (event.key === "Enter") {
+      handleSendMessage();
+    }
+  }
+
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-full flex flex-col  bg-gray-800 text-white z-10`}
+      className={`fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-10`}
     >
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
-        <h2 className=" font-bold">Chat</h2>
+        <h2 className="font-bold">Chat</h2>
         <button onClick={handleClose} className="text-white cursor-pointer">
           X
         </button>
       </div>
-      <div className="flex flex-1  p-4 flex-col gap-4">
+      <div className="flex flex-1 p-4 flex-col gap-4">
         <div className="flex w-full bg-primary flex-col h-[84vh] rounded-xl p-4 gap-4 overflow-auto">
           {messages.length > 0 &&
-            messages.map((message) => (
+            messages.map((message, index) => (
               <div
+                key={index}
                 className={classNames(
                   "w-full",
                   "gap-4",
@@ -95,7 +124,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                       className="rounded-full w-20 h-20"
                       src={receiver.avatar}
                     />
-                    <span> {receiver.name}</span>
+                    <span>{receiver.name}</span>
                   </div>
                 )}
                 <div
@@ -148,7 +177,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                       className="rounded-full w-20 h-20"
                       src={loggedUser.avatar}
                     />
-                    <span> {loggedUser.username}</span>
+                    <span>{loggedUser.username}</span>
                   </div>
                 )}
               </div>
@@ -162,10 +191,16 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
         </div>
         <div className="relative w-full h-fit">
           <Input
-            className="bg-primary rounded-lg h-10"
+            className="bg-primary rounded-lg h-10 focus:outline-none focus:ring-0"
             placeholder={`Send a message to ${receiver.name}`}
+            value={currentMessageContent}
+            onChange={(e) => setCurrentMessageContent(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
-          <div className="absolute flex top-0 right-0 bg-secondary h-10 w-10 justify-center items-center  text-white border border-white  rounded-lg">
+          <div
+            onClick={handleSendMessage}
+            className="absolute flex top-0 right-0 bg-secondary text-white hover:bg-black cursor-pointer h-10 w-10 justify-center items-center border border-white rounded-lg"
+          >
             <SendHorizontal />
           </div>
         </div>
