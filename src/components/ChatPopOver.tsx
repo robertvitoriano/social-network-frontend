@@ -96,7 +96,16 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                   )}
                 >
                   <p>{message.content}</p>
-                  <span className="absolute bottom-1 right-2 text-xs">
+                  <span
+                    className={classNames(
+                      "absolute",
+                      "bottom-2",
+                      { "right-2": message.isFromUser },
+                      { "left-2": !message.isFromUser },
+
+                      "text-xs"
+                    )}
+                  >
                     {message.createdAt}
                   </span>
                 </div>
