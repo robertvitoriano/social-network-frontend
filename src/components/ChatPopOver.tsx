@@ -71,6 +71,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                   "w-full",
                   "gap-4",
                   "flex",
+                  "relative",
                   { "justify-end": message.isFromUser },
                   { "justify-start": !message.isFromUser }
                 )}
@@ -108,6 +109,23 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                   >
                     {message.createdAt}
                   </span>
+                  <div
+                    className={classNames(
+                      "absolute",
+                      { "right-[-6px]": message.isFromUser },
+                      { "left-[-6px]": !message.isFromUser },
+                      "bottom-0",
+                      "w-0",
+                      "h-0",
+                      "border-solid",
+                      "border-l-[8px]",
+                      "border-r-[8px]",
+                      "border-b-[16px]",
+                      "border-transparent",
+                      { "border-b-black": !message.isFromUser },
+                      { "border-b-white": message.isFromUser }
+                    )}
+                  ></div>
                 </div>
                 {message.isFromUser && (
                   <div className="flex flex-col items-center justify-center w-fit">
