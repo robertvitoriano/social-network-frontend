@@ -73,7 +73,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   async function handleSendMessage() {
     if (currentMessageContent.trim() === "") return;
 
-    // await sendChatMessage(receiver.id, currentMessageContent);
+    await sendChatMessage(receiver.id, currentMessageContent);
     setMessages([
       ...messages,
       {
@@ -133,14 +133,14 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                     "rounded-xl",
                     "relative",
                     "w-full",
-                    "md:w-fit",
+                    "md:max-w-[600px]",
                     { "text-black": message.isFromUser },
                     { "bg-white": message.isFromUser },
                     { "bg-black": !message.isFromUser },
                     { "text-white": !message.isFromUser }
                   )}
                 >
-                  <p>{message.content}</p>
+                  <p className="break-words">{message.content}</p>
                   <span
                     className={classNames(
                       "absolute",
