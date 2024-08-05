@@ -19,22 +19,27 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     {
       content: "My first message",
       isFromUser: false,
+      createdAt: "19:10:56",
     },
     {
       content: "My first message",
       isFromUser: false,
+      createdAt: "19:10:56",
     },
     {
       content: "My first message",
       isFromUser: true,
+      createdAt: "19:10:56",
     },
     {
       content: "My first message",
       isFromUser: false,
+      createdAt: "19:10:56",
     },
     {
       content: "My first message",
       isFromUser: false,
+      createdAt: "19:10:56",
     },
   ]);
 
@@ -83,6 +88,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                   className={classNames(
                     "p-4",
                     "rounded-xl",
+                    "relative",
                     { "text-black": message.isFromUser },
                     { "bg-white": message.isFromUser },
                     { "bg-black": !message.isFromUser },
@@ -90,6 +96,9 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                   )}
                 >
                   <p>{message.content}</p>
+                  <span className="absolute bottom-1 right-2 text-xs">
+                    {message.createdAt}
+                  </span>
                 </div>
                 {message.isFromUser && (
                   <div className="flex flex-col items-center justify-center w-fit">
