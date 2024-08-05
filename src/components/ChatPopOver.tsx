@@ -17,11 +17,11 @@ interface ChatPopOverProps {
 
 export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [messages, setMessages] = useState<any[]>([]);
+  const loggedUser = useAuthStore((state) => state.loggedUser);
 
   useEffect(() => {
     load();
   }, []);
-  const loggedUser = useAuthStore((state) => state.loggedUser);
 
   async function load() {
     const chatMessages = [
@@ -69,8 +69,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     <div
       className={`fixed top-0 right-0 h-full w-full flex flex-col  bg-gray-800 text-white z-10`}
     >
-      <div className="flex justify-between items-center p-4 bg-gray-900">
-        <h2 className="text-lg font-bold">Chat</h2>
+      <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
+        <h2 className=" font-bold">Chat</h2>
         <button onClick={handleClose} className="text-white cursor-pointer">
           X
         </button>
