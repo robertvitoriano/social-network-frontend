@@ -2,6 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/lib/store/authStore";
 import classNames from "classnames";
+import { SendHorizontal } from "lucide-react";
 
 import { useEffect, useState } from "react";
 export type Receiver = {
@@ -90,6 +91,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                     "p-4",
                     "rounded-xl",
                     "relative",
+                    "w-full",
+                    "md:w-fit",
                     { "text-black": message.isFromUser },
                     { "bg-white": message.isFromUser },
                     { "bg-black": !message.isFromUser },
@@ -145,10 +148,15 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
             </div>
           )}
         </div>
-        <Input
-          className="bg-primary "
-          placeholder={`Send a message to ${receiver.name}`}
-        />
+        <div className="relative w-full h-fit">
+          <Input
+            className="bg-primary rounded-lg h-10"
+            placeholder={`Send a message to ${receiver.name}`}
+          />
+          <div className="absolute flex top-0 right-0 bg-secondary h-10 w-10 justify-center items-center  text-white border border-white  rounded-lg">
+            <SendHorizontal />
+          </div>
+        </div>
       </div>
     </div>
   );
