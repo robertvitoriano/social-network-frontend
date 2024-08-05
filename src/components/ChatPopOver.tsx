@@ -16,40 +16,52 @@ interface ChatPopOverProps {
 }
 
 export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
-  const [messages, setMessages] = useState([
-    {
-      content: "My first message",
-      isFromUser: false,
-      createdAt: "19:10:56",
-    },
-    {
-      content: "My first message",
-      isFromUser: false,
-      createdAt: "19:10:56",
-    },
-    {
-      content: "My first message",
-      isFromUser: true,
-      createdAt: "19:10:56",
-    },
-    {
-      content: "My first message",
-      isFromUser: false,
-      createdAt: "19:10:56",
-    },
-    {
-      content: "My first message",
-      isFromUser: false,
-      createdAt: "19:10:56",
-    },
-  ]);
+  const [messages, setMessages] = useState<any[]>([]);
 
   useEffect(() => {
     load();
   }, []);
   const loggedUser = useAuthStore((state) => state.loggedUser);
 
-  async function load() {}
+  async function load() {
+    const chatMessages = [
+      {
+        id: "",
+        userId: receiver.id,
+        content: "My first message",
+        createdAt: "19:10:56",
+      },
+      {
+        id: "",
+        userId: receiver.id,
+        content: "My first message",
+        createdAt: "19:10:56",
+      },
+      {
+        id: "",
+        userId: loggedUser.id,
+        content: "My first message",
+        createdAt: "19:10:56",
+      },
+      {
+        id: "",
+        userId: receiver.id,
+        content: "My first message",
+        createdAt: "19:10:56",
+      },
+      {
+        id: "",
+        userId: receiver.id,
+        content: "My first message",
+        createdAt: "19:10:56",
+      },
+    ];
+    const displayMessages = chatMessages.map((message) => ({
+      ...message,
+      isFromUser: message.userId === loggedUser.id,
+    }));
+    setMessages(displayMessages);
+  }
   async function handleClose() {
     onClose();
   }
