@@ -48,10 +48,9 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     setMessages([
       ...messages,
       {
-        id: "",
         userId: loggedUser.id,
         content: currentMessageContent,
-        createdAt: new Date().toLocaleTimeString(),
+        createdAt: new Date().toISOString(),
         isFromUser: true,
       },
     ]);
@@ -65,9 +64,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   }
 
   return (
-    <div
-      className={`fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-10`}
-    >
+    <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-10">
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
         <h2 className="font-bold">Chat</h2>
         <button onClick={handleClose} className="text-white cursor-pointer">
@@ -118,11 +115,10 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
                       "bottom-2",
                       { "right-2": message.isFromUser },
                       { "left-2": !message.isFromUser },
-
                       "text-xs"
                     )}
                   >
-                    {message.createdAt}
+                    {new Date(message.createdAt).toLocaleTimeString()}
                   </span>
                   <div
                     className={classNames(
