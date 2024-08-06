@@ -1,4 +1,5 @@
 "use client";
+import { listChatMessagesByUser } from "@/api/list-chat-messages";
 import { sendChatMessage } from "@/api/send-chat-message";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/lib/store/authStore";
@@ -27,38 +28,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   }, []);
 
   async function load() {
-    const chatMessages = [
-      {
-        id: "",
-        userId: receiver.id,
-        content: "My first message",
-        createdAt: "19:10:56",
-      },
-      {
-        id: "",
-        userId: receiver.id,
-        content: "My first message",
-        createdAt: "19:10:56",
-      },
-      {
-        id: "",
-        userId: loggedUser.id,
-        content: "My first message",
-        createdAt: "19:10:56",
-      },
-      {
-        id: "",
-        userId: receiver.id,
-        content: "My first message",
-        createdAt: "19:10:56",
-      },
-      {
-        id: "",
-        userId: receiver.id,
-        content: "My first message",
-        createdAt: "19:10:56",
-      },
-    ];
+    const chatMessagesResponse = await listChatMessagesByUser(receiver.id);
+    const chatMessages = chatMessagesResponse.data.userMessages;
     const displayMessages = chatMessages.map((message) => ({
       ...message,
       isFromUser: message.userId === loggedUser.id,
