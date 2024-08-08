@@ -25,9 +25,19 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [hasLoadedChat, setHasLoadedChat] = useState(false);
+  useEffect(() => {
+    handleInitialLoad();
+  }, []);
+
   useEffect(() => {
     load();
   }, [currentPage]);
+
+  async function handleInitialLoad() {
+    await load();
+    scrollToBottom();
+  }
 
   async function load() {
     const chatMessagesResponse = await listChatMessagesByUser(
