@@ -35,7 +35,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
       receiver.id,
       currentPage
     );
-    const chatMessages = chatMessagesResponse.data.userMessages;
+    const chatMessages = chatMessagesResponse.data.messages;
     const displayMessages = chatMessages.map((message: Message) => ({
       ...message,
       isFromUser: message.userId === loggedUser.id,
