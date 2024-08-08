@@ -4,7 +4,7 @@ import { sendChatMessage } from "@/api/send-chat-message";
 import { Input } from "@/components/ui/input";
 import { useAuthStore } from "@/lib/store/authStore";
 import { SendHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatMessage, Message } from "./ui/ChatMessage";
 
 export type Receiver = {
@@ -23,12 +23,15 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const [currentMessageContent, setCurrentMessageContent] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     load();
-
-    document.body.addEventListener("scroll", () => console.log("HELLO WORLD"));
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   async function load() {
     const chatMessagesResponse = await listChatMessagesByUser(
@@ -69,6 +72,10 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     }
   }
 
+  function scrollToBottom() {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }
+
   return (
     <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-10">
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
@@ -80,8 +87,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
       <div className="flex flex-1 p-4 flex-col gap-4">
         <div className="flex w-full bg-primary flex-col h-[84vh] rounded-xl p-4 gap-4 overflow-auto">
           {messages.length > 0 &&
-            messages.map((message) => (
-              <ChatMessage message={message} receiver={receiver} />
+            messages.map((message, index) => (
+              <ChatMessage key={index} message={message} receiver={receiver} />
             ))}
           {messages.length === 0 && (
             <div className="flex flex-1 flex-col gap items-center justify-center gap-8">
@@ -89,6 +96,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
               <span>Send a message to {receiver.name}</span>
             </div>
           )}
+          <div ref={messagesEndRef}></div>
         </div>
         <div className="relative w-full h-fit">
           <Input
