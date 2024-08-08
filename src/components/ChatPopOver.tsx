@@ -11,6 +11,7 @@ export type Receiver = {
   id: string;
   avatar: string;
   name: string;
+  lastMessage: string;
 };
 
 interface ChatPopOverProps {

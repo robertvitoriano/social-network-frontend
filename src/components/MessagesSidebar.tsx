@@ -36,10 +36,7 @@ export const MessagesSideBar = () => {
               <span>{friend.name}</span>
             </div>
             <div>
-              <p>
-                Última mensagem enviada por julio, Última mensagem enviada por
-                julio...
-              </p>
+              <p>{friend.lastMessage}</p>
             </div>
           </div>
         ))}
