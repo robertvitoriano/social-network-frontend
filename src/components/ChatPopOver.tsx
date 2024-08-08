@@ -22,6 +22,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [messages, setMessages] = useState<any[]>([]);
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const [currentMessageContent, setCurrentMessageContent] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     load();
@@ -30,7 +31,10 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   }, []);
 
   async function load() {
-    const chatMessagesResponse = await listChatMessagesByUser(receiver.id);
+    const chatMessagesResponse = await listChatMessagesByUser(
+      receiver.id,
+      currentPage
+    );
     const chatMessages = chatMessagesResponse.data.userMessages;
     const displayMessages = chatMessages.map((message: Message) => ({
       ...message,
