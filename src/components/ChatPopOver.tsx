@@ -24,14 +24,10 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [currentMessageContent, setCurrentMessageContent] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     load();
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+  }, [currentPage]);
 
   async function load() {
     const chatMessagesResponse = await listChatMessagesByUser(
@@ -50,6 +46,14 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     onClose();
   }
 
+  const handleScroll = () => {
+    if (messagesContainerRef.current) {
+      if (messagesContainerRef.current.scrollTop === 0) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    }
+  };
+
   async function handleSendMessage() {
     if (currentMessageContent.trim() === "") return;
 
@@ -64,6 +68,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
       },
     ]);
     setCurrentMessageContent("");
+    scrollToBottom();
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
@@ -85,7 +90,11 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
         </button>
       </div>
       <div className="flex flex-1 p-4 flex-col gap-4">
-        <div className="flex w-full bg-primary flex-col h-[84vh] rounded-xl p-4 gap-4 overflow-auto">
+        <div
+          className="flex w-full bg-primary flex-col h-[84vh] rounded-xl p-4 gap-4 overflow-auto"
+          onScroll={handleScroll}
+          ref={messagesContainerRef}
+        >
           {messages.length > 0 &&
             messages.map((message, index) => (
               <ChatMessage key={index} message={message} receiver={receiver} />
