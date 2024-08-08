@@ -38,6 +38,9 @@ export const MessagesSideBar = () => {
             <div>
               <p>{friend.lastMessage}</p>
             </div>
+            <span className="text-right">
+              {new Date(friend.lastMessageCreatedAt).toLocaleTimeString()}
+            </span>
           </div>
         ))}
       </div>
