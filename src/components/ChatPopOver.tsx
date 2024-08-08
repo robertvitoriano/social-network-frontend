@@ -25,30 +25,46 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const [hasLoadedChat, setHasLoadedChat] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [shouldLoadNextPageMessages, setShouldLoadNextPageMessages] =
+    useState(false);
+
   useEffect(() => {
     handleInitialLoad();
   }, []);
 
   useEffect(() => {
-    load();
-  }, [currentPage]);
+    if (currentPage < totalPages && shouldLoadNextPageMessages) {
+      loadNextPageMessages();
+    }
+  }, [shouldLoadNextPageMessages]);
 
   async function handleInitialLoad() {
-    await load();
+    await load({});
     scrollToBottom();
   }
 
-  async function load() {
+  async function loadNextPageMessages() {
+    const nextPage = currentPage + 1;
+    setCurrentPage(nextPage);
+    await load({ page: nextPage });
+    setShouldLoadNextPageMessages(false);
+  }
+
+  async function load({ page = 1 }) {
     const chatMessagesResponse = await listChatMessagesByUser(
       receiver.id,
-      currentPage
+      page
     );
-    const chatMessages = chatMessagesResponse.data.messages;
-    const displayMessages = chatMessages.map((message: Message) => ({
+    const { messages: loadedMessages, totalPages } = chatMessagesResponse.data;
+    console.log(chatMessagesResponse.data);
+    setTotalPages(totalPages);
+
+    const displayMessages = loadedMessages.map((message: Message) => ({
       ...message,
       isFromUser: message.userId === loggedUser.id,
     }));
+
     setMessages(displayMessages);
   }
 
@@ -59,7 +75,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const handleScroll = () => {
     if (messagesContainerRef.current) {
       if (messagesContainerRef.current.scrollTop === 0) {
-        setCurrentPage((prevPage) => prevPage + 1);
+        setShouldLoadNextPageMessages(true);
       }
     }
   };
