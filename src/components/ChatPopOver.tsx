@@ -65,7 +65,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
       isFromUser: message.userId === loggedUser.id,
     }));
 
-    setMessages(displayMessages);
+    setMessages([...messages, ...displayMessages]);
   }
 
   async function handleClose() {
