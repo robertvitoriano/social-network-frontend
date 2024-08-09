@@ -2,6 +2,7 @@
 import { listUserFriends } from "@/api/list-user-frients";
 import { useEffect, useState } from "react";
 import { ChatPopOver, Receiver } from "./ChatPopOver";
+import classNames from "classnames";
 export const MessagesSideBar = () => {
   const [userFriends, setUserFriends] = useState([]);
   const [showChat, setShowChat] = useState(false);
@@ -33,7 +34,18 @@ export const MessagesSideBar = () => {
           >
             <div className="flex gap-4 items-center">
               <img className="rounded-full h-12 w-12" src={friend.avatar} />
-              <span>{friend.name}</span>
+              <div className="flex gap-4 items-center">
+                <span>{friend.name}</span>
+                <div
+                  className={classNames(
+                    "w-3",
+                    "h-3",
+                    { "bg-green-500": friend.online },
+                    { "bg-secondary": !friend.online },
+                    "rounded-full"
+                  )}
+                ></div>
+              </div>
             </div>
             <div>
               <p>{friend.lastMessage}</p>

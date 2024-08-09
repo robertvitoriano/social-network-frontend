@@ -13,6 +13,7 @@ export type Receiver = {
   name: string;
   lastMessage: string;
   lastMessageCreatedAt: Date;
+  online: boolean;
 };
 
 interface ChatPopOverProps {
