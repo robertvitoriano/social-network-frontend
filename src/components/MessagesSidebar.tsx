@@ -13,17 +13,22 @@ export const MessagesSideBar = () => {
   useEffect(() => {
     loadUserFriends();
     socket.on(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
+    return () => {
+      socket.off(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
+    };
   }, []);
 
   function handleFriendLoggedIn(friendId: string) {
-    const userFriendsUpdated = userFriends.map((friend: Receiver) => {
-      if (friend.id === friendId) {
-        return { ...friend, online: true };
-      }
-      return friend;
+    setUserFriends((prevUserFriends) => {
+      return prevUserFriends.map((friend: Receiver) => {
+        if (friend.id === friendId) {
+          return { ...friend, online: true };
+        }
+        return friend;
+      });
     });
-    setUserFriends(userFriendsUpdated);
   }
+
   async function loadUserFriends() {
     const friendsResponse = await listUserFriends();
     setUserFriends(friendsResponse.data.userFriends);
