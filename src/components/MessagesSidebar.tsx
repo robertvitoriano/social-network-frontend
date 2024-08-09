@@ -3,14 +3,27 @@ import { listUserFriends } from "@/api/list-user-frients";
 import { useEffect, useState } from "react";
 import { ChatPopOver, Receiver } from "./ChatPopOver";
 import classNames from "classnames";
+import socket from "../api/websocket-service";
+import { EventType } from "@/enums/websocket-events";
+
 export const MessagesSideBar = () => {
-  const [userFriends, setUserFriends] = useState([]);
+  const [userFriends, setUserFriends] = useState<Receiver[]>([]);
   const [showChat, setShowChat] = useState(false);
   const [friendInCurrentChat, setFriendInCurrentChat] = useState<Receiver>();
   useEffect(() => {
     loadUserFriends();
+    socket.on(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
   }, []);
 
+  function handleFriendLoggedIn(friendId: string) {
+    const userFriendsUpdated = userFriends.map((friend: Receiver) => {
+      if (friend.id === friendId) {
+        return { ...friend, online: true };
+      }
+      return friend;
+    });
+    setUserFriends(userFriendsUpdated);
+  }
   async function loadUserFriends() {
     const friendsResponse = await listUserFriends();
     setUserFriends(friendsResponse.data.userFriends);
