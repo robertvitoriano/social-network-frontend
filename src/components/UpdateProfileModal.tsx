@@ -2,7 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { updateUserProfile } from "@/api/update-user-profile"; // Replace with your API call
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
-import { LoggedUser, useAuthStore } from "@/lib/store/authStore";
+import { useAuthStore } from "@/lib/store/authStore";
+import { LogOut } from "lucide-react";
+import { signOut } from "@/api/sign-out";
+import { useRouter } from "next/navigation";
 
 export type UpdateProfileFormInputs = {
   name: string;
@@ -29,6 +32,7 @@ const UpdateProfileModal: React.FC<{
     loggedUser.avatar || ""
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
     setValue("name", loggedUser.name);
@@ -68,6 +72,11 @@ const UpdateProfileModal: React.FC<{
         setAvatarURL(url);
       }
     }
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/auth/sign-in");
   };
 
   return (
@@ -159,10 +168,11 @@ const UpdateProfileModal: React.FC<{
             </button>
             <button
               type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-600"
+              onClick={handleLogout}
+              className="flex items-center bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
             >
-              Cancel
+              <LogOut className="mr-2" />
+              Log Out
             </button>
           </div>
         </form>

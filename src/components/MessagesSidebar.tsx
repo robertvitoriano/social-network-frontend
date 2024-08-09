@@ -10,14 +10,26 @@ export const MessagesSideBar = () => {
   const [userFriends, setUserFriends] = useState<Receiver[]>([]);
   const [showChat, setShowChat] = useState(false);
   const [friendInCurrentChat, setFriendInCurrentChat] = useState<Receiver>();
+
   useEffect(() => {
     loadUserFriends();
     socket.on(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
+    socket.on(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
+
     return () => {
       socket.off(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
     };
   }, []);
-
+  function handleFriendLoggedOut(friendId: string) {
+    setUserFriends((prevUserFriends) => {
+      return prevUserFriends.map((friend: Receiver) => {
+        if (friend.id === friendId) {
+          return { ...friend, online: false };
+        }
+        return friend;
+      });
+    });
+  }
   function handleFriendLoggedIn(friendId: string) {
     setUserFriends((prevUserFriends) => {
       return prevUserFriends.map((friend: Receiver) => {
