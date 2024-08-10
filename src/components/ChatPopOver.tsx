@@ -136,7 +136,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
       </div>
       <div className="flex flex-1 p-4 flex-col gap-4">
         <div
-          className="flex w-full bg-primary flex-col h-[84vh] rounded-xl p-4 gap-4 overflow-auto"
+          className="flex w-full bg-primary flex-col h-[76vh] 2xl:h-[84vh] rounded-xl p-4 gap-4 overflow-auto"
           onScroll={handleScroll}
           ref={messagesContainerRef}
         >
