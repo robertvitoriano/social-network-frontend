@@ -39,6 +39,9 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     socket.on(EventType.USER_TYPING, () => {
       setReceiverIsTyping(true);
     });
+    socket.on(EventType.USER_TYPING_STOPPED, () => {
+      setReceiverIsTyping(false);
+    });
   }, []);
 
   useEffect(() => {
@@ -65,7 +68,6 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
       page
     );
     const { messages: loadedMessages, totalPages } = chatMessagesResponse.data;
-    console.log(chatMessagesResponse.data);
     setTotalPages(totalPages);
 
     const displayMessages = loadedMessages.map((message: Message) => ({
@@ -118,6 +120,10 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   function handleUserTyping(event: React.ChangeEvent<HTMLInputElement>) {
     setCurrentMessageContent(event.target.value);
     socket.emit(EventType.USER_TYPING, receiver.id);
+    setTimeout(
+      () => socket.emit(EventType.USER_TYPING_STOPPED, receiver.id),
+      5000
+    );
   }
 
   return (
