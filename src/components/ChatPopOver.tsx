@@ -6,6 +6,8 @@ import { useAuthStore } from "@/lib/store/authStore";
 import { SendHorizontal } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { ChatMessage, Message } from "./ui/ChatMessage";
+import socket from "@/api/websocket-service";
+import { EventType } from "@/enums/websocket-events";
 
 export type Receiver = {
   id: string;
@@ -31,9 +33,12 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [totalPages, setTotalPages] = useState(0);
   const [shouldLoadNextPageMessages, setShouldLoadNextPageMessages] =
     useState(false);
-
+  const [receiverIsTyping, setReceiverIsTyping] = useState(false);
   useEffect(() => {
     handleInitialLoad();
+    socket.on(EventType.USER_TYPING, () => {
+      setReceiverIsTyping(true);
+    });
   }, []);
 
   useEffect(() => {
@@ -110,6 +115,11 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
+  function handleUserTyping(event: React.ChangeEvent<HTMLInputElement>) {
+    setCurrentMessageContent(event.target.value);
+    socket.emit(EventType.USER_TYPING, receiver.id);
+  }
+
   return (
     <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-10">
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
@@ -136,12 +146,17 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
           )}
           <div ref={messagesEndRef}></div>
         </div>
+        {receiverIsTyping && (
+          <div className="absolute left-1/2 top-4 transform -translate-x-1/2 text-white text-bold">
+            <span>{receiver.name} is typing...</span>
+          </div>
+        )}
         <div className="relative w-full h-fit">
           <Input
             className="bg-primary rounded-lg h-10 focus:outline-none focus:ring-0"
             placeholder={`Send a message to ${receiver.name}`}
             value={currentMessageContent}
-            onChange={(e) => setCurrentMessageContent(e.target.value)}
+            onChange={handleUserTyping}
             onKeyDown={handleKeyDown}
           />
           <div
