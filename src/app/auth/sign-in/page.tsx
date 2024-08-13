@@ -1,9 +1,8 @@
 "use client";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { signIn } from "@/api/sign-in";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { useAuthStore } from "@/lib/store/authStore";
 
 type LoginFormInputs = {
@@ -20,9 +19,7 @@ const SignIn: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>();
-
   const router = useRouter();
-
   const onSubmit = async (data: LoginFormInputs) => {
     const signInResponse = await signIn(data);
     setLoggedUser(signInResponse.data.user);
