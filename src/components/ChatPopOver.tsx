@@ -92,8 +92,6 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
 
   async function handleSendMessage() {
     if (currentMessageContent.trim() === "") return;
-
-    await sendChatMessage(receiver.id, currentMessageContent);
     setMessages([
       ...messages,
       {
@@ -105,6 +103,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     ]);
     setCurrentMessageContent("");
     scrollToBottom();
+
+    await sendChatMessage(receiver.id, currentMessageContent);
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
