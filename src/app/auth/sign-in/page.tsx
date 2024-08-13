@@ -1,9 +1,11 @@
 "use client";
+
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { signIn } from "@/api/sign-in";
-import { useRouter } from "next/router";
 import { useAuthStore } from "@/lib/store/authStore";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
+import { signInGoogle } from "@/api/sign-in-google";
 
 type LoginFormInputs = {
   email: string;
@@ -19,12 +21,15 @@ const SignIn: React.FC = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormInputs>();
-  const router = useRouter();
   const onSubmit = async (data: LoginFormInputs) => {
     const signInResponse = await signIn(data);
     setLoggedUser(signInResponse.data.user);
     setToken(signInResponse.data.token);
-    router.push("/");
+    location.href = "/";
+  };
+
+  const handleGoogleLogin = async () => {
+    await signInGoogle();
   };
 
   return (
@@ -67,12 +72,15 @@ const SignIn: React.FC = () => {
             >
               Login
             </button>
-            <Link
-              className="hover:underline hover:text-blue-500 cursor-pointer"
-              href={"/auth/sign-up"}
-            >
-              Don't have an account yet? Click here to sign up!
-            </Link>
+            <div className="flex flex-col gap-4 mt-4 items-center">
+              <GoogleLoginButton handler={handleGoogleLogin} />
+              <Link
+                className="hover:underline hover:text-blue-500  cursor-pointer"
+                href={"/auth/sign-up"}
+              >
+                Don't have an account yet? Click here to sign up!
+              </Link>
+            </div>
           </div>
         </form>
       </div>
