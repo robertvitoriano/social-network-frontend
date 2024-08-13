@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/lib/store/authStore";
 import axios from "axios";
 export const api = axios.create({
-  baseURL: "http://localhost:3334",
+  baseURL: "https://main-backend.robertvitoriano.com:3334",
 });
 const requestIntercepter = (config: any) => {
   //@ts-ignore
