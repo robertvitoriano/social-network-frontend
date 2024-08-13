@@ -84,7 +84,7 @@ const UpdateProfileModal: React.FC<{
       open={open}
       onOpenChange={(isOpen: boolean) => !isOpen && onClose()}
     >
-      <DialogContent>
+      <DialogContent className="bg-secondary text-white">
         <DialogHeader>
           <DialogTitle>Update Profile</DialogTitle>
         </DialogHeader>
@@ -98,35 +98,35 @@ const UpdateProfileModal: React.FC<{
               id="name"
               type="text"
               {...register("name", { required: "Name is required" })}
-              className="w-full px-3 py-2 border text-black border-gray-300 rounded"
+              className="w-full px-3 py-2 border text-primary border-gray-300 rounded"
             />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="username">
+            <label className="block mb-2" htmlFor="username">
               Username
             </label>
             <input
               id="username"
               type="text"
               {...register("username", { required: "Username is required" })}
-              className="w-full px-3 py-2 border text-black border-gray-300 rounded"
+              className="w-full px-3 py-2 border text-primary  border-gray-300 rounded"
             />
             {errors.username && (
               <p className="text-red-500 text-sm">{errors.username.message}</p>
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2" htmlFor="email">
+            <label className="block mb-2" htmlFor="email">
               Email
             </label>
             <input
               id="email"
               type="email"
               {...register("email", { required: "Email is required" })}
-              className="w-full px-3 py-2 border text-black border-gray-300 rounded"
+              className="w-full px-3 py-2 border text-primary  border-gray-300 rounded"
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
