@@ -42,6 +42,9 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     socket.on(EventType.USER_TYPING_STOPPED, () => {
       setReceiverIsTyping(false);
     });
+    socket.on(EventType.MESSAGE_RECEIVED, (newMessage) => {
+      setMessages((prevMessages) => ({ ...prevMessages, newMessage }));
+    });
   }, []);
 
   useEffect(() => {
@@ -92,15 +95,17 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
 
   async function handleSendMessage() {
     if (currentMessageContent.trim() === "") return;
-    setMessages([
-      ...messages,
-      {
-        userId: loggedUser.id,
-        content: currentMessageContent,
-        createdAt: new Date().toISOString(),
-        isFromUser: true,
-      },
-    ]);
+    const newMessage = {
+      userId: loggedUser.id,
+      content: currentMessageContent,
+      createdAt: new Date().toISOString(),
+      isFromUser: true,
+    };
+    setMessages([...messages, newMessage]);
+    socket.emit(EventType.MESSAGE_SENT, {
+      ...newMessage,
+      receiverId: receiver.id,
+    });
     setCurrentMessageContent("");
     scrollToBottom();
 
