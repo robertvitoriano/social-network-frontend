@@ -59,16 +59,12 @@ export default function Home() {
   const handleFriendshipRequest = async (friendId: string) => {
     try {
       toast("Friendship response sent!");
-      const frienshipRequestResponse = await sendFriendshipRequest(friendId);
+      await sendFriendshipRequest(friendId);
       await fetchNonFriends();
     } catch (error) {
       console.error("Error sending friendship request:", error);
     }
   };
-
-  if (!rehydrated || loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <main className="flex h-screen flex-col p-10 bg-secondary text-white overflow-hidden">
