@@ -44,7 +44,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     });
     socket.on(EventType.MESSAGE_RECEIVED, (newMessage) => {
       console.log({ newMessage });
-      setMessages((prevMessages) => ({ ...prevMessages, newMessage }));
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
   }, []);
 
