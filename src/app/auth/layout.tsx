@@ -1,19 +1,25 @@
-import type { Metadata } from "next";
+"use client";
+import { useEffect } from "react";
 import "../globals.css";
-
-export const metadata: Metadata = {
-  title: "Social Network",
-  description: "A simple network created by robert vitoriano",
-};
-
+import { useAuthStore } from "@/lib/store/authStore";
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body className="bg-secondary">{children}</body>
-    </html>
-  );
+  const setLoggedUser = useAuthStore((state) => state.setLoggedUser);
+  const setToken = useAuthStore((state) => state.setToken);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+    const user = urlParams.get("user");
+
+    if (token && user) {
+      setToken(token);
+      setLoggedUser(JSON.parse(user));
+      location.href = "/";
+    }
+  }, []);
+  return <div className="bg-secondary">{children}</div>;
 }

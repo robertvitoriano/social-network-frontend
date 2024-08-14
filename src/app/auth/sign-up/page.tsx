@@ -2,6 +2,8 @@
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import { signUp } from "@/api/sign-up";
+import { GoogleLoginButton } from "@/components/GoogleLoginButton";
+import { signInGoogle } from "@/api/sign-in-google";
 
 type SignUpFormInputs = {
   name: string;
@@ -24,7 +26,9 @@ const SignUp: React.FC = () => {
   const onSubmit = async (data: SignUpFormInputs) => {
     await signUp(data);
   };
-
+  const handleGoogleSignUp = async () => {
+    await signInGoogle();
+  };
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-primary p-6 rounded-lg shadow-lg w-full max-w-md text-white">
@@ -115,12 +119,16 @@ const SignUp: React.FC = () => {
           >
             Sign Up
           </button>
-          <Link
-            className="hover:underline hover:text-blue-500 cursor-pointer"
-            href={"/auth/sign-in"}
-          >
-            Go back to login page
-          </Link>
+
+          <div className="flex flex-col gap-4 mt-4 items-center">
+            <GoogleLoginButton handler={handleGoogleSignUp} />
+            <Link
+              className="hover:underline hover:text-blue-500 cursor-pointer"
+              href={"/auth/sign-in"}
+            >
+              Go back to login page
+            </Link>
+          </div>
         </form>
       </div>
     </div>
