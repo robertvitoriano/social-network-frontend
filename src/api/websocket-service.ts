@@ -1,6 +1,6 @@
 import io from "socket.io-client";
-
-const socket = io("https://main-backend.robertvitoriano.com:3334");
+//@ts-ignore
+const socket = io(process.env.NEXT_PUBLIC_API_URL);
 
 socket.on("connect", () => {
   console.log("Connected to WebSocket server");
