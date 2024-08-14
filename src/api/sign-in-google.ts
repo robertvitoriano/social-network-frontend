@@ -1,6 +1,7 @@
 import { oauthGoogle } from "./../lib/google-auth-keys";
 
 export async function signInGoogle() {
+  console.log(oauthGoogle);
   const query = {
     client_id: oauthGoogle.clientId,
     redirect_uri: oauthGoogle.redirectURI,
