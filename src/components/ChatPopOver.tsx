@@ -105,6 +105,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     socket.emit(EventType.MESSAGE_SENT, {
       ...newMessage,
       receiverId: receiver.id,
+      isFromUser: false,
     });
     setCurrentMessageContent("");
     scrollToBottom();
