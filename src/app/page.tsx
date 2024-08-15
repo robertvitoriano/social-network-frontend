@@ -58,7 +58,7 @@ export default function Home() {
   };
   const handleFriendshipRequest = async (friendId: string) => {
     try {
-      toast("Friendship response sent!");
+      toast("Friendship resquest sent!");
       await sendFriendshipRequest(friendId);
       await fetchNonFriends();
     } catch (error) {

@@ -5,7 +5,7 @@ import { FriendshipStatus } from "@/enums/friendship-status";
 import classNames from "classnames";
 import { Check } from "lucide-react";
 import { useState } from "react";
-
+import { toast } from "sonner";
 interface FriendshipRequestNotificationProps {
   notification: any;
 }
@@ -17,6 +17,7 @@ export const FriendshipRequestNotification: React.FC<
     useState<boolean>();
   async function handleFriendshipResponse(friendId: string, status: string) {
     setFrienshipRequestWasAccepeted(true);
+    toast("Friendship response was sent");
     await sendFriendshipResponse(friendId, status);
   }
   return (
