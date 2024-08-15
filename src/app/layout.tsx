@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="relative h-full">
+        <div className="relative h-full overflow-hidden">
           <Toaster />
           <Header />
           <MessagesSideBar />
