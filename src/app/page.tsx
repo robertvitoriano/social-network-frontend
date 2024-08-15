@@ -69,7 +69,123 @@ export default function Home() {
   return (
     <main className="flex h-screen flex-col p-10 bg-secondary text-white overflow-hidden">
       <h1 className="text-center mb-10">Sugestions</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 overflow-auto">
+        {nonFriends.map((nonFriend) => (
+          <div
+            key={nonFriend.id}
+            className="flex flex-col gap-4 justify-between items-center mb-4"
+          >
+            <span>{nonFriend.name}</span>
+            <img src={nonFriend.avatar} className="h-60 w-60 object-cover" />
+            {nonFriend.friendshipRequestStatus === "not_sent" && (
+              <button
+                onClick={() => handleFriendshipRequest(nonFriend.id)}
+                className="flex items-center bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+              >
+                <Send className="mr-2" size={18} />
+                Send Friendship Request
+              </button>
+            )}
+            {nonFriend.friendshipRequestStatus === "sent" && (
+              <span className="flex items-center text-black">
+                <Clock className="mr-2" size={18} />
+                Friendship request pending
+              </span>
+            )}
+            {nonFriend.friendshipRequestStatus === "received" && (
+              <div className="flex flex-1 flex-col gap-2 pt-2">
+                <User className="mr-2" size={18} />
+                <span className="text-sm">wants to be your friend!</span>
+                <div className="flex justify-around">
+                  <div className="p-2 ">
+                    <span
+                      className="cursor-pointer hover:underline"
+                      onClick={() =>
+                        handleFriendshipResponse(
+                          nonFriend.id,
+                          FriendshipStatus.REJECTED
+                        )
+                      }
+                    >
+                      Ignore
+                    </span>
+                  </div>
+                  <div className="text-primary p-2 border-2 border-primary rounded-full">
+                    <span
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handleFriendshipResponse(
+                          nonFriend.id,
+                          FriendshipStatus.ACCEPTED
+                        )
+                      }
+                    >
+                      Accept
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+        {nonFriends.map((nonFriend) => (
+          <div
+            key={nonFriend.id}
+            className="flex flex-col gap-4 justify-between items-center mb-4"
+          >
+            <span>{nonFriend.name}</span>
+            <img src={nonFriend.avatar} className="h-60 w-60 object-cover" />
+            {nonFriend.friendshipRequestStatus === "not_sent" && (
+              <button
+                onClick={() => handleFriendshipRequest(nonFriend.id)}
+                className="flex items-center bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+              >
+                <Send className="mr-2" size={18} />
+                Send Friendship Request
+              </button>
+            )}
+            {nonFriend.friendshipRequestStatus === "sent" && (
+              <span className="flex items-center text-black">
+                <Clock className="mr-2" size={18} />
+                Friendship request pending
+              </span>
+            )}
+            {nonFriend.friendshipRequestStatus === "received" && (
+              <div className="flex flex-1 flex-col gap-2 pt-2">
+                <User className="mr-2" size={18} />
+                <span className="text-sm">wants to be your friend!</span>
+                <div className="flex justify-around">
+                  <div className="p-2 ">
+                    <span
+                      className="cursor-pointer hover:underline"
+                      onClick={() =>
+                        handleFriendshipResponse(
+                          nonFriend.id,
+                          FriendshipStatus.REJECTED
+                        )
+                      }
+                    >
+                      Ignore
+                    </span>
+                  </div>
+                  <div className="text-primary p-2 border-2 border-primary rounded-full">
+                    <span
+                      className="cursor-pointer"
+                      onClick={() =>
+                        handleFriendshipResponse(
+                          nonFriend.id,
+                          FriendshipStatus.ACCEPTED
+                        )
+                      }
+                    >
+                      Accept
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
         {nonFriends.map((nonFriend) => (
           <div
             key={nonFriend.id}
