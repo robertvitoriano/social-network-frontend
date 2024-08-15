@@ -76,6 +76,7 @@ const UpdateProfileModal: React.FC<{
 
   const handleLogout = async () => {
     await signOut();
+    onClose();
     router.push("/auth/sign-in");
   };
 
