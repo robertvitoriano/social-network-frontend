@@ -23,6 +23,12 @@ interface ChatPopOverProps {
   receiver: Receiver;
 }
 
+const Spinner = () => (
+  <div className="fixed inset-0 flex items-center justify-center bg-transparent z-20 fit-w fit-h">
+    <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 border-white border-t-transparent rounded-full"></div>
+  </div>
+);
+
 export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [messages, setMessages] = useState<any[]>([]);
   const loggedUser = useAuthStore((state) => state.loggedUser);
@@ -34,6 +40,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [shouldLoadNextPageMessages, setShouldLoadNextPageMessages] =
     useState(false);
   const [receiverIsTyping, setReceiverIsTyping] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     handleInitialLoad();
     socket.on(EventType.USER_TYPING, () => {
@@ -56,13 +64,16 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   async function handleInitialLoad() {
     await load({});
     scrollToBottom();
+    setLoading(false);
   }
 
   async function loadNextPageMessages() {
+    setLoading(true);
     const nextPage = currentPage + 1;
     setCurrentPage(nextPage);
     await load({ page: nextPage });
     setShouldLoadNextPageMessages(false);
+    setLoading(false);
   }
 
   async function load({ page = 1 }) {
@@ -134,6 +145,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
 
   return (
     <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-10">
+      {loading && <Spinner />}
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
         <h2 className="font-bold">Chat</h2>
         <button onClick={handleClose} className="text-white cursor-pointer">
@@ -151,7 +163,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
               <ChatMessage key={index} message={message} receiver={receiver} />
             ))}
           {messages.length === 0 && (
-            <div className="flex flex-1 flex-col gap items-center justify-center gap-8">
+            <div className="flex flex-1 flex-col items-center justify-center gap-8">
               <img className="rounded-full w-24 h-24" src={receiver.avatar} />
               <span>Send a message to {receiver.name}</span>
             </div>
