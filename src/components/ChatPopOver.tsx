@@ -63,7 +63,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
 
   async function handleInitialLoad() {
     await load({});
-    scrollToBottom();
+    setTimeout(scrollToBottom, 100);
     setLoading(false);
   }
 
