@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { MessagesSideBar } from "@/components/MessagesSidebar";
+import { ClientAuthenticatedLayoutComponent } from "@/components/ClientAuthenticatedLayoutComponent";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="relative h-full overflow-hidden">
           <Toaster />
-          <Header />
-          <MessagesSideBar />
+          <ClientAuthenticatedLayoutComponent>
+            <Header />
+            <MessagesSideBar />
+          </ClientAuthenticatedLayoutComponent>
           {children}
         </div>
       </body>
