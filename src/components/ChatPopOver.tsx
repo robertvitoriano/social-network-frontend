@@ -44,15 +44,22 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
 
   useEffect(() => {
     handleInitialLoad();
-    socket.on(EventType.USER_TYPING, () => {
-      setReceiverIsTyping(true);
-    });
-    socket.on(EventType.USER_TYPING_STOPPED, () => {
-      setReceiverIsTyping(false);
-    });
-    socket.on(EventType.MESSAGE_RECEIVED, (newMessage) => {
+    const handleUserTyping = () => setReceiverIsTyping(true);
+    const handleUserTypingStopped = () => setReceiverIsTyping(false);
+    const handleMessageReceived = (newMessage: object) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-    });
+      setTimeout(scrollToBottom, 100);
+    };
+
+    socket.on(EventType.USER_TYPING, handleUserTyping);
+    socket.on(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
+    socket.on(EventType.MESSAGE_RECEIVED, handleMessageReceived);
+
+    return () => {
+      socket.off(EventType.USER_TYPING, handleUserTyping);
+      socket.off(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
+      socket.off(EventType.MESSAGE_RECEIVED, handleMessageReceived);
+    };
   }, []);
 
   useEffect(() => {
@@ -119,7 +126,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
       isFromUser: false,
     });
     setCurrentMessageContent("");
-    scrollToBottom();
+    setTimeout(scrollToBottom, 100);
 
     await sendChatMessage(receiver.id, currentMessageContent);
   }
