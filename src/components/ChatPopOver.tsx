@@ -41,6 +41,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     useState(false);
   const [receiverIsTyping, setReceiverIsTyping] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
 
   useEffect(() => {
     handleInitialLoad();
@@ -68,9 +69,15 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     }
   }, [shouldLoadNextPageMessages]);
 
+  useEffect(() => {
+    if (shouldScrollToBottom) {
+      scrollToBottom();
+    }
+  }, [shouldScrollToBottom]);
+
   async function handleInitialLoad() {
     await load({});
-    setTimeout(scrollToBottom, 100);
+    setShouldScrollToBottom(true);
     setLoading(false);
   }
 
@@ -139,6 +146,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
 
   function scrollToBottom() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    setShouldScrollToBottom(false);
   }
 
   function handleUserTyping(event: React.ChangeEvent<HTMLInputElement>) {
