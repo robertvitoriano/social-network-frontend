@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChatMessage, Message } from "./ui/ChatMessage";
 import socket from "@/api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
+import { Spinner } from "./Spinner";
 
 export type Receiver = {
   id: string;
@@ -22,12 +23,6 @@ interface ChatPopOverProps {
   onClose: () => void;
   receiver: Receiver;
 }
-
-const Spinner = () => (
-  <div className="fixed inset-0 flex items-center justify-center bg-transparent z-20 fit-w fit-h">
-    <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 border-white border-t-transparent rounded-full"></div>
-  </div>
-);
 
 export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [messages, setMessages] = useState<any[]>([]);

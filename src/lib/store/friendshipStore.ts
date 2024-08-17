@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { listNonFriends } from "@/api/list-non-friends";
+import { useMainStore } from "./mainStore";
 
 interface FriendSugestion {
   id: string;
@@ -30,11 +31,16 @@ export const useFriendshipStore = create<IFriendshipStore>()(
           friendsSugestions,
         })),
       fetchFriendshipSugestions: async () => {
+        const { setLoading } = useMainStore.getState();
+
         try {
+          setLoading(true);
           const response = await listNonFriends();
           set({ friendsSugestions: response.data.nonFriends });
         } catch (error) {
           console.error("Error fetching friends suggestions:", error);
+        } finally {
+          setLoading(false);
         }
       },
     }),
