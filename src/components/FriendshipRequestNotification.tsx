@@ -2,10 +2,12 @@
 
 import { sendFriendshipResponse } from "@/api/send-friendship-response";
 import { FriendshipStatus } from "@/enums/friendship-status";
+import { useFriendshipStore } from "@/lib/store/friendshipStore";
 import classNames from "classnames";
 import { Check } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+
 interface FriendshipRequestNotificationProps {
   notification: any;
 }
@@ -15,11 +17,16 @@ export const FriendshipRequestNotification: React.FC<
 > = ({ notification }) => {
   const [frienshipRequestWasAccepeted, setFrienshipRequestWasAccepeted] =
     useState<boolean>();
+  const fetchFriendshipSugestions = useFriendshipStore(
+    (state) => state.fetchFriendshipSugestions
+  );
   async function handleFriendshipResponse(friendId: string, status: string) {
     setFrienshipRequestWasAccepeted(true);
     toast("Friendship response was sent");
     await sendFriendshipResponse(friendId, status);
+    await fetchFriendshipSugestions();
   }
+
   return (
     <div
       className={classNames(
