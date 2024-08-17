@@ -2,8 +2,9 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { listNonFriends } from "@/api/list-non-friends";
 import { useMainStore } from "./mainStore";
+import { listUserFriends } from "@/api/list-user-frients";
 
-interface FriendSugestion {
+export interface FriendSuggestion {
   id: string;
   name: string;
   email: string;
@@ -14,21 +15,38 @@ interface FriendSugestion {
   created_at: string;
 }
 
+export interface IUserFriend {
+  lastMessageCreatedAt: string | number | Date;
+  lastMessage: string;
+  online: boolean;
+  id: string;
+  name: string;
+  avatar: string;
+}
+
 interface IFriendshipStore {
   rehydrated: boolean;
-  friendsSugestions: FriendSugestion[];
-  setFriendsSugestions: (friendsSugestions: FriendSugestion[]) => void;
+  friendsSuggestions: FriendSuggestion[];
+  userFriends: IUserFriend[];
+  setFriendsSuggestions: (friendsSuggestions: FriendSuggestion[]) => void;
+  setUserFriends: (userFriends: IUserFriend[]) => void;
   fetchFriendshipSugestions: () => Promise<void>;
+  fetchUserFriends: () => Promise<void>;
 }
 
 export const useFriendshipStore = create<IFriendshipStore>()(
   persist<IFriendshipStore>(
     (set) => ({
       rehydrated: false,
-      friendsSugestions: [],
-      setFriendsSugestions: (friendsSugestions: FriendSugestion[]) =>
+      friendsSuggestions: [],
+      userFriends: [],
+      setFriendsSuggestions: (friendsSuggestions: FriendSuggestion[]) =>
         set(() => ({
-          friendsSugestions,
+          friendsSuggestions,
+        })),
+      setUserFriends: (userFriends: IUserFriend[]) =>
+        set(() => ({
+          userFriends,
         })),
       fetchFriendshipSugestions: async () => {
         const { setLoading } = useMainStore.getState();
@@ -36,9 +54,22 @@ export const useFriendshipStore = create<IFriendshipStore>()(
         try {
           setLoading(true);
           const response = await listNonFriends();
-          set({ friendsSugestions: response.data.nonFriends });
+          set({ friendsSuggestions: response.data.nonFriends });
         } catch (error) {
           console.error("Error fetching friends suggestions:", error);
+        } finally {
+          setLoading(false);
+        }
+      },
+      fetchUserFriends: async () => {
+        const { setLoading } = useMainStore.getState();
+
+        try {
+          setLoading(true);
+          const response = await listUserFriends();
+          set({ userFriends: response.data.userFriends });
+        } catch (error) {
+          console.error("Error fetching user friends:", error);
         } finally {
           setLoading(false);
         }

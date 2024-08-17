@@ -17,13 +17,13 @@ export default function Home() {
   const token = useAuthStore((state) => state.token);
   const rehydrated = useAuthStore((state) => state.rehydrated);
   const frienshipSugestions = useFriendshipStore(
-    (state) => state.friendsSugestions
+    (state) => state.friendsSuggestions
   );
   const fetchFriendshipSugestions = useFriendshipStore(
     (state) => state.fetchFriendshipSugestions
   );
   const loading = useMainStore((state) => state.loading);
-  const setLoading = useMainStore((state) => state.setLoading);
+
   useEffect(() => {
     if (!rehydrated) return;
 

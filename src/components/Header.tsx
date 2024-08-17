@@ -7,7 +7,7 @@ import { NotificationsPopOver } from "./NotificationsPopOver";
 import { listUserNotifications } from "@/api/list-user-notifications";
 import UpdateProfileModal from "./UpdateProfileModal";
 import { useAuthStore } from "@/lib/store/authStore";
-import { checkCustomRoutes } from "next/dist/lib/load-custom-routes";
+import { useFriendshipStore } from "@/lib/store/friendshipStore";
 
 export function Header() {
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -22,13 +22,21 @@ export function Header() {
     setIsNotificationsPopOverOpen((prev) => !prev);
   };
 
+  const fetchFriendshipSugestions = useFriendshipStore(
+    (state) => state.fetchFriendshipSugestions
+  );
+
+  const fetchUserFriends = useFriendshipStore(
+    (state) => state.fetchUserFriends
+  );
+
   useEffect(() => {
     if (!loggedUser.id) return;
 
     const userId = loggedUser.id;
     socket.emit(EventType.USER_JOIN_ROOM, userId);
 
-    const handleFriendshipRequest = (
+    const handleFriendshipRequest = async (
       receveidFriendshipRequestNotification: any
     ) => {
       checkNotReadNotifications([receveidFriendshipRequestNotification]);
@@ -36,9 +44,10 @@ export function Header() {
         ...notifications,
         receveidFriendshipRequestNotification,
       ]);
+      await fetchFriendshipSugestions();
     };
 
-    const handleFriendshipAccepted = (
+    const handleFriendshipAccepted = async (
       receveidFriendshipAcceptedNotification: any
     ) => {
       checkNotReadNotifications([receveidFriendshipAcceptedNotification]);
@@ -46,6 +55,8 @@ export function Header() {
         ...notifications,
         receveidFriendshipAcceptedNotification,
       ]);
+      await fetchFriendshipSugestions();
+      await fetchUserFriends();
     };
 
     socket.on(EventType.FRIENDSHIP_REQUEST, handleFriendshipRequest);

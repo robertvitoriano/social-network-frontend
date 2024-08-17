@@ -20,11 +20,15 @@ export const FriendshipRequestNotification: React.FC<
   const fetchFriendshipSugestions = useFriendshipStore(
     (state) => state.fetchFriendshipSugestions
   );
+  const fetchUserFriends = useFriendshipStore(
+    (state) => state.fetchUserFriends
+  );
   async function handleFriendshipResponse(friendId: string, status: string) {
     setFrienshipRequestWasAccepeted(true);
     toast("Friendship response was sent");
     await sendFriendshipResponse(friendId, status);
     await fetchFriendshipSugestions();
+    await fetchUserFriends();
   }
 
   return (

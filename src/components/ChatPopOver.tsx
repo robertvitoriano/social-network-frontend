@@ -9,6 +9,7 @@ import { ChatMessage, Message } from "./ui/ChatMessage";
 import socket from "@/api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
 import { Spinner } from "./Spinner";
+import { IUserFriend } from "@/lib/store/friendshipStore";
 
 export type Receiver = {
   id: string;
@@ -21,7 +22,7 @@ export type Receiver = {
 
 interface ChatPopOverProps {
   onClose: () => void;
-  receiver: Receiver;
+  receiver: IUserFriend;
 }
 
 export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {

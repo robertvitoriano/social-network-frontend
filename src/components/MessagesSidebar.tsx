@@ -1,20 +1,23 @@
 "use client";
-import { listUserFriends } from "@/api/list-user-frients";
 import { useEffect, useState } from "react";
-import { ChatPopOver, Receiver } from "./ChatPopOver";
+import { ChatPopOver } from "./ChatPopOver";
 import classNames from "classnames";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { IUserFriend, useFriendshipStore } from "@/lib/store/friendshipStore";
 
 export const MessagesSideBar = () => {
-  const [userFriends, setUserFriends] = useState<Receiver[]>([]);
   const [showChat, setShowChat] = useState(false);
-  const [friendInCurrentChat, setFriendInCurrentChat] = useState<Receiver>();
+  const [friendInCurrentChat, setFriendInCurrentChat] = useState<IUserFriend>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const fetchUserFriends = useFriendshipStore(
+    (state) => state.fetchUserFriends
+  );
+  const setUserFriends = useFriendshipStore((state) => state.setUserFriends);
+  const userFriends = useFriendshipStore((state) => state.userFriends);
   useEffect(() => {
-    loadUserFriends();
+    fetchUserFriends();
     socket.on(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
     socket.on(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
 
@@ -23,31 +26,25 @@ export const MessagesSideBar = () => {
     };
   }, []);
   function handleFriendLoggedOut(friendId: string) {
-    setUserFriends((prevUserFriends) => {
-      return prevUserFriends.map((friend: Receiver) => {
-        if (friend.id === friendId) {
-          return { ...friend, online: false };
-        }
-        return friend;
-      });
+    const updatedUserFriends = userFriends.map((friend: IUserFriend) => {
+      if (friend.id === friendId) {
+        return { ...friend, online: false };
+      }
+      return friend;
     });
+    setUserFriends(updatedUserFriends);
   }
   function handleFriendLoggedIn(friendId: string) {
-    setUserFriends((prevUserFriends) => {
-      return prevUserFriends.map((friend: Receiver) => {
-        if (friend.id === friendId) {
-          return { ...friend, online: true };
-        }
-        return friend;
-      });
+    const updatedUserFriends = userFriends.map((friend: IUserFriend) => {
+      if (friend.id === friendId) {
+        return { ...friend, online: true };
+      }
+      return friend;
     });
+    setUserFriends(updatedUserFriends);
   }
 
-  async function loadUserFriends() {
-    const friendsResponse = await listUserFriends();
-    setUserFriends(friendsResponse.data.userFriends);
-  }
-  async function handleChatOpen(friend: Receiver) {
+  async function handleChatOpen(friend: IUserFriend) {
     console.log({ friend });
     setShowChat(true);
     setFriendInCurrentChat(friend);
@@ -76,7 +73,7 @@ export const MessagesSideBar = () => {
           {isSidebarOpen ? <ChevronRight /> : <ChevronLeft />}
         </div>
         {isSidebarOpen &&
-          userFriends.map((friend: Receiver) => (
+          userFriends.map((friend: IUserFriend) => (
             <div
               className="w-full border-2 flex gap-4 flex-col border-white p-4 cursor-pointer"
               onClick={() => handleChatOpen(friend)}

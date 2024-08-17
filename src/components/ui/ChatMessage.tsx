@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/lib/store/authStore";
 import classNames from "classnames";
 import { Receiver } from "../ChatPopOver";
+import { IUserFriend } from "@/lib/store/friendshipStore";
 
 export type Message = {
   id: string;
@@ -11,7 +12,7 @@ export type Message = {
 };
 export type ChatMessageProps = {
   message: Message;
-  receiver: Receiver;
+  receiver: IUserFriend;
 };
 
 export const ChatMessage = ({ message, receiver }: ChatMessageProps) => {
