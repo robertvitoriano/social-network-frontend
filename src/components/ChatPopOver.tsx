@@ -45,7 +45,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     const handleUserTypingStopped = () => setReceiverIsTyping(false);
     const handleMessageReceived = (newMessage: object) => {
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setTimeout(scrollToBottom, 100);
+      setShouldScrollToBottom(true);
     };
 
     socket.on(EventType.USER_TYPING, handleUserTyping);
