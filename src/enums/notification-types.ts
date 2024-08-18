@@ -7,4 +7,8 @@ export const NotificationTypes = {
     id: 2,
     label: "FRIENDSHIP_ACCEPTED",
   },
+  MESSAGE_RECEIVED: {
+    id: 3,
+    label: "MESSAGE_RECEIVED",
+  },
 };
