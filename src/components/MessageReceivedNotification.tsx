@@ -27,7 +27,12 @@ export const MessageReceivedNotification: React.FC<
       <img className="h-14 w-14 rounded-full" src={notification.senderAvatar} />
       <span className="text-sm">{notification.content}</span>
       <div className="w-full flex justify-end">
-        <span className="text-sm">{notification.createdAt}</span>
+        <span className="text-sm">
+          {" "}
+          {new Date(notification.createdAt).toLocaleDateString() +
+            " - " +
+            new Date(notification.createdAt).toLocaleTimeString()}
+        </span>
       </div>
     </div>
   );
