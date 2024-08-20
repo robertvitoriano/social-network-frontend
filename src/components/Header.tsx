@@ -58,8 +58,18 @@ export function Header() {
       await fetchFriendshipSugestions();
       await fetchUserFriends();
     };
+    const handleChatNotificationReceived = async (
+      chatNotificationReceived: any
+    ) => {
+      checkNotReadNotifications([chatNotificationReceived]);
+      setNotifications([...notifications, chatNotificationReceived]);
+    };
     socket.on(EventType.FRIENDSHIP_REQUEST, handleFriendshipRequest);
     socket.on(EventType.FRIENDSHIP_ACCEPTED, handleFriendshipAccepted);
+    socket.on(
+      EventType.MESSAGE_RECEIVED_NOTIFICATION,
+      handleChatNotificationReceived
+    );
 
     loadNotifications();
     return () => {
