@@ -53,12 +53,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     socket.on(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
     socket.on(EventType.MESSAGE_RECEIVED, handleMessageReceived);
     sendChatOpenEvent();
-    chatOpenTimerId = setInterval(() => {
-      socket.emit(EventType.CHAT_OPEN, {
-        userId: loggedUser.id,
-        friendId: receiver.id,
-      });
-    }, timeToSendOpenChatEvent);
+    chatOpenTimerId = setInterval(sendChatOpenEvent, timeToSendOpenChatEvent);
 
     return () => {
       socket.off(EventType.USER_TYPING, handleUserTyping);
