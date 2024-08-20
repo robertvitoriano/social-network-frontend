@@ -38,7 +38,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   const [receiverIsTyping, setReceiverIsTyping] = useState(false);
   const [loading, setLoading] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
-
+  const timeToSendOpenChatEvent = 5000;
+  let chatOpenTimerId: NodeJS.Timeout | null = null;
   useEffect(() => {
     handleInitialLoad();
     const handleUserTyping = () => setReceiverIsTyping(true);
@@ -51,11 +52,23 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     socket.on(EventType.USER_TYPING, handleUserTyping);
     socket.on(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
     socket.on(EventType.MESSAGE_RECEIVED, handleMessageReceived);
+    sendChatOpenEvent();
+    chatOpenTimerId = setInterval(() => {
+      socket.emit(EventType.CHAT_OPEN, {
+        userId: loggedUser.id,
+        friendId: receiver.id,
+      });
+    }, timeToSendOpenChatEvent);
 
     return () => {
       socket.off(EventType.USER_TYPING, handleUserTyping);
       socket.off(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
       socket.off(EventType.MESSAGE_RECEIVED, handleMessageReceived);
+      sendChatCloseEvent();
+
+      if (chatOpenTimerId) {
+        clearInterval(chatOpenTimerId);
+      }
     };
   }, []);
 
@@ -103,7 +116,20 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   }
 
   async function handleClose() {
+    sendChatCloseEvent();
     onClose();
+  }
+  function sendChatCloseEvent() {
+    socket.emit(EventType.CHAT_CLOSE, {
+      userId: loggedUser.id,
+      friendId: receiver.id,
+    });
+  }
+  function sendChatOpenEvent() {
+    socket.emit(EventType.CHAT_OPEN, {
+      userId: loggedUser.id,
+      friendId: receiver.id,
+    });
   }
 
   const handleScroll = () => {

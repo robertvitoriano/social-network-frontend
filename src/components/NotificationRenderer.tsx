@@ -14,14 +14,14 @@ const NotificationRenderer: React.FC<NotificationRendererProps> = ({
 }) => {
   return (
     <>
-      {notification.type === NotificationTypes.FRIENDSHIP_REQUEST.label && (
+      {notification.typeId === NotificationTypes.FRIENDSHIP_REQUEST.id && (
         <FriendshipRequestNotification notification={notification} />
       )}
 
-      {notification.type === NotificationTypes.FRIENDSHIP_ACCEPTED.label && (
+      {notification.typeId === NotificationTypes.FRIENDSHIP_ACCEPTED.id && (
         <FriendshipAcceptedNotification notification={notification} />
       )}
-      {notification.type === NotificationTypes.MESSAGE_RECEIVED.label && (
+      {notification.typeId === NotificationTypes.MESSAGE_RECEIVED.id && (
         <MessageReceivedNotification notification={notification} />
       )}
     </>
