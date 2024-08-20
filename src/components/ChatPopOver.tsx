@@ -45,6 +45,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     const handleUserTyping = () => setReceiverIsTyping(true);
     const handleUserTypingStopped = () => setReceiverIsTyping(false);
     const handleMessageReceived = (newMessage: object) => {
+      console.log({ messages });
+      console.log({ newMessage });
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       setShouldScrollToBottom(true);
     };
