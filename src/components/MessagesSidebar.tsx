@@ -45,7 +45,6 @@ export const MessagesSideBar = () => {
   }
 
   async function handleChatOpen(friend: IUserFriend) {
-    console.log({ friend });
     setShowChat(true);
     setFriendInCurrentChat(friend);
   }

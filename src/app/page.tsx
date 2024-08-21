@@ -11,10 +11,14 @@ import { useFriendshipStore } from "@/lib/store/friendshipStore";
 import { toast } from "sonner";
 import { useMainStore } from "@/lib/store/mainStore";
 import { Spinner } from "@/components/Spinner";
+import { useBeforeUnload } from "@/lib/hooks/useBeforeUnload";
+import socket from "@/api/websocket-service";
+import { EventType } from "@/enums/websocket-events";
 
 export default function Home() {
   const router = useRouter();
   const token = useAuthStore((state) => state.token);
+  const loggedUser = useAuthStore((state) => state.loggedUser);
   const rehydrated = useAuthStore((state) => state.rehydrated);
   const frienshipSugestions = useFriendshipStore(
     (state) => state.friendsSuggestions
@@ -24,6 +28,10 @@ export default function Home() {
   );
   const loading = useMainStore((state) => state.loading);
 
+  useBeforeUnload(() => {
+    socket.emit(EventType.USER_OFFLINE, { userId: loggedUser.id });
+  });
+
   useEffect(() => {
     if (!rehydrated) return;
 
@@ -31,6 +39,7 @@ export default function Home() {
       router.push("/auth/sign-in");
     } else {
       fetchFriendshipSugestions();
+      socket.emit(EventType.USER_ONLINE, { userId: loggedUser.id });
     }
   }, [token, rehydrated]);
 
@@ -42,6 +51,7 @@ export default function Home() {
     await sendFriendshipResponse(friendshipSugestionId, status);
     await fetchFriendshipSugestions();
   };
+  const handleOffline = () => {};
   const handleFriendshipRequest = async (friendId: string) => {
     try {
       toast("Friendship resquest sent!");
