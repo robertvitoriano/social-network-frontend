@@ -21,6 +21,7 @@ api.interceptors.request.use(requestIntercepter);
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    console.log({ error });
     if (error.response && error.response.status === 401) {
       await signOut();
       localStorage.clear();

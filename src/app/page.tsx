@@ -58,7 +58,7 @@ export default function Home() {
       {loading && <Spinner size={60} />}
 
       {!loading && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 overflow-auto">
+        <div className="grid grid-cols-1 h-[80%] md:grid-cols-2 lg:grid-cols-4 gap-10 overflow-auto lg:h-full">
           {frienshipSugestions.map((friendshipSugestion) => (
             <div
               key={friendshipSugestion.id}
@@ -91,7 +91,7 @@ export default function Home() {
                   <User className="mr-2" size={18} />
                   <span className="text-sm">wants to be your friend!</span>
                   <div className="flex justify-around">
-                    <div className="p-2 ">
+                    <div className="p-2">
                       <span
                         className="cursor-pointer hover:underline"
                         onClick={() =>
