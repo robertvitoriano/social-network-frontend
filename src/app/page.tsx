@@ -68,7 +68,7 @@ export default function Home() {
       {loading && <Spinner size={60} />}
 
       {!loading && (
-        <div className="grid grid-cols-1 h-[80%] md:grid-cols-2 lg:grid-cols-4 gap-10 overflow-auto lg:h-full">
+        <div className="grid grid-cols-1 h-[80%] md:grid-cols-2 lg:grid-cols-4 gap-10 overflow-auto md:h-fit">
           {frienshipSugestions.map((friendshipSugestion) => (
             <div
               key={friendshipSugestion.id}
