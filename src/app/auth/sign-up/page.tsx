@@ -29,7 +29,6 @@ const SignUp: React.FC = () => {
 
   const onSubmit = async (data: SignUpFormInputs) => {
     const signUpResponse = await signUp(data);
-    console.log({ signUpResponse });
     setLoggedUser(signUpResponse.data.user);
     setToken(signUpResponse.data.token);
     router.push("/");

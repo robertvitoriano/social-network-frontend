@@ -1,6 +1,5 @@
 import { useAuthStore } from "@/lib/store/authStore";
 import axios, { InternalAxiosRequestConfig, AxiosError } from "axios";
-import { signOut } from "./sign-out";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
