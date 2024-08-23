@@ -31,7 +31,7 @@ const SignUp: React.FC = () => {
     const signUpResponse = await signUp(data);
     setLoggedUser(signUpResponse.data.user);
     setToken(signUpResponse.data.token);
-    router.push("/");
+    location.href = "/";
   };
   const handleGoogleSignUp = async () => {
     await signInGoogle();
