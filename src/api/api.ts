@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/lib/store/authStore";
-import axios, { InternalAxiosRequestConfig } from "axios";
+import axios, { InternalAxiosRequestConfig, AxiosError } from "axios";
 import { signOut } from "./sign-out";
 
 export const api = axios.create({
@@ -20,12 +20,16 @@ api.interceptors.request.use(requestIntercepter);
 
 api.interceptors.response.use(
   (response) => response,
-  async (error) => {
-    console.log({ error });
-    if (error.response && error.response.status === 401) {
+  async (error: AxiosError) => {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !error.request.responseURL.includes("/log-out")
+    ) {
       await signOut();
       localStorage.clear();
       window.location.reload();
     }
+    return Promise.reject(error);
   }
 );
