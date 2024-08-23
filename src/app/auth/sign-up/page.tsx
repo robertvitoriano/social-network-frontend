@@ -4,7 +4,8 @@ import Link from "next/link";
 import { signUp } from "@/api/sign-up";
 import { GoogleLoginButton } from "@/components/GoogleLoginButton";
 import { signInGoogle } from "@/api/sign-in-google";
-
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/lib/store/authStore";
 type SignUpFormInputs = {
   name: string;
   email: string;
@@ -22,9 +23,16 @@ const SignUp: React.FC = () => {
   } = useForm<SignUpFormInputs>();
 
   const password = watch("password");
+  const router = useRouter();
+  const setToken = useAuthStore((state) => state.setToken);
+  const setLoggedUser = useAuthStore((state) => state.setLoggedUser);
 
   const onSubmit = async (data: SignUpFormInputs) => {
-    await signUp(data);
+    const signUpResponse = await signUp(data);
+    console.log({ signUpResponse });
+    setLoggedUser(signUpResponse.data.user);
+    setToken(signUpResponse.data.token);
+    router.push("/");
   };
   const handleGoogleSignUp = async () => {
     await signInGoogle();

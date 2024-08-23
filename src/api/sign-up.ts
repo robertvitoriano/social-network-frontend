@@ -6,10 +6,11 @@ export interface signUpBody {
   username: string;
 }
 export async function signUp({ email, password, name, username }: signUpBody) {
-  await api.post("/users", {
+  const signUpReponse = await api.post("/users", {
     email,
     password,
     name,
     username,
   });
+  return signUpReponse;
 }
