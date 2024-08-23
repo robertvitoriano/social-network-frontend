@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChatPopOver } from "./ChatPopOver";
 import classNames from "classnames";
 import socket from "../api/websocket-service";
@@ -11,20 +11,39 @@ export const MessagesSideBar = () => {
   const [showChat, setShowChat] = useState(false);
   const [friendInCurrentChat, setFriendInCurrentChat] = useState<IUserFriend>();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+
   const fetchUserFriends = useFriendshipStore(
     (state) => state.fetchUserFriends
   );
   const setUserFriends = useFriendshipStore((state) => state.setUserFriends);
   const userFriends = useFriendshipStore((state) => state.userFriends);
+
   useEffect(() => {
     fetchUserFriends();
     socket.on(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
     socket.on(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
 
+    // Event listener to handle clicks outside the sidebar
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sidebarRef.current &&
+        !sidebarRef.current.contains(event.target as Node)
+      ) {
+        setIsSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup on unmount
     return () => {
       socket.off(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
+      socket.off(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   function handleFriendLoggedOut(friendId: string) {
     const updatedUserFriends = userFriends.map((friend: IUserFriend) => {
       if (friend.id === friendId) {
@@ -34,6 +53,7 @@ export const MessagesSideBar = () => {
     });
     setUserFriends(updatedUserFriends);
   }
+
   function handleFriendLoggedIn(friendId: string) {
     const updatedUserFriends = userFriends.map((friend: IUserFriend) => {
       if (friend.id === friendId) {
@@ -48,15 +68,19 @@ export const MessagesSideBar = () => {
     setShowChat(true);
     setFriendInCurrentChat(friend);
   }
+
   function handleChatClose() {
     setShowChat(false);
   }
+
   function toggleSidebar() {
     setIsSidebarOpen(!isSidebarOpen);
   }
+
   return (
     <>
       <div
+        ref={sidebarRef}
         className={classNames(
           "bg-primary h-screen absolute text-white transition-transform duration-300",
           {
