@@ -26,9 +26,8 @@ api.interceptors.response.use(
       error.response.status === 401 &&
       !error.request.responseURL.includes("/log-out")
     ) {
-      await signOut();
       localStorage.clear();
-      window.location.reload();
+      window.location.href = "/auth/sign-in";
     }
     return Promise.reject(error);
   }
