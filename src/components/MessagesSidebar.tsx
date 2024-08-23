@@ -24,7 +24,6 @@ export const MessagesSideBar = () => {
     socket.on(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
     socket.on(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
 
-    // Event listener to handle clicks outside the sidebar
     const handleClickOutside = (event: MouseEvent) => {
       if (
         sidebarRef.current &&
@@ -36,7 +35,6 @@ export const MessagesSideBar = () => {
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Cleanup on unmount
     return () => {
       socket.off(EventType.FRIEND_LOGGED_IN, handleFriendLoggedIn);
       socket.off(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
