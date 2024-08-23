@@ -33,7 +33,7 @@ export function NotificationsPopOver({
   }
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white z-10`}
+      className={`fixed top-0 right-0 h-full w-full bg-gray-800 text-white z-10 overflow-y-auto`}
     >
       <div className="flex justify-between items-center p-4 bg-gray-900">
         <h2 className="text-lg font-bold">Notifications</h2>
