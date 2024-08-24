@@ -138,6 +138,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   async function handleSendMessage() {
     if (currentMessageContent.trim() === "") return;
     const newMessage = {
+      friendshipId: receiver.friendshipId,
       userId: loggedUser.id,
       content: currentMessageContent,
       createdAt: new Date().toISOString(),
@@ -152,7 +153,11 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     setCurrentMessageContent("");
     setTimeout(scrollToBottom, 100);
 
-    await sendChatMessage(receiver.id, currentMessageContent);
+    await sendChatMessage({
+      receiverId: receiver.id,
+      content: currentMessageContent,
+      friendshipId: receiver.friendshipId,
+    });
   }
 
   function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {

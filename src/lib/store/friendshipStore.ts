@@ -16,6 +16,7 @@ export interface FriendSuggestion {
 }
 
 export interface IUserFriend {
+  friendshipId: string;
   lastMessageCreatedAt: string | number | Date;
   lastMessage: string;
   online: boolean;
