@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { Toaster } from "@/components/ui/sonner";
 import { MessagesSideBar } from "@/components/MessagesSidebar";
 import { ClientAuthenticatedLayoutComponent } from "@/components/ClientAuthenticatedLayoutComponent";
+import { MessageCircleMore } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,10 +24,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="relative h-[100vh] flex flex-col overflow-hidden">
           <Toaster />
-          <ClientAuthenticatedLayoutComponent>
-            <Header />
-            <MessagesSideBar />
-          </ClientAuthenticatedLayoutComponent>
+          <ClientAuthenticatedLayoutComponent />
           {children}
         </div>
       </body>

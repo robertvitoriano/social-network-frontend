@@ -1,15 +1,14 @@
 "use client";
 
 import { useEffect, useState, ReactNode } from "react";
+import { Header } from "./Header";
+import { MessagesSideBar } from "./MessagesSidebar";
+import { MessageCircleMore } from "lucide-react";
 
-interface ClientAuthenticatedLayoutComponentProps {
-  children: ReactNode;
-}
-
-export const ClientAuthenticatedLayoutComponent = ({
-  children,
-}: ClientAuthenticatedLayoutComponentProps) => {
+export const ClientAuthenticatedLayoutComponent = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isMessageSidebarOpen, setIsMessageSidebarOpen] =
+    useState<boolean>(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -25,5 +24,23 @@ export const ClientAuthenticatedLayoutComponent = ({
     }
   }, []);
 
-  return <>{isAuthenticated && children}</>;
+  return (
+    <>
+      {isAuthenticated && (
+        <>
+          <Header />
+          <MessagesSideBar
+            isMessageSidebarOpen={isMessageSidebarOpen}
+            setIsMessageSidebarOpen={setIsMessageSidebarOpen}
+          />
+          <div className="absolute rounded-full bg-black text-white bottom-4 right-12 p-2">
+            <MessageCircleMore
+              size={32}
+              onClick={() => setIsMessageSidebarOpen(true)}
+            />
+          </div>
+        </>
+      )}
+    </>
+  );
 };

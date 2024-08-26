@@ -4,13 +4,18 @@ import { ChatPopOver } from "./ChatPopOver";
 import classNames from "classnames";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { IUserFriend, useFriendshipStore } from "@/lib/store/friendshipStore";
-
-export const MessagesSideBar = () => {
+type Props = {
+  isMessageSidebarOpen: boolean;
+  setIsMessageSidebarOpen: Function;
+};
+export const MessagesSideBar = ({
+  isMessageSidebarOpen,
+  setIsMessageSidebarOpen,
+}: Props) => {
   const [showChat, setShowChat] = useState(false);
   const [friendInCurrentChat, setFriendInCurrentChat] = useState<IUserFriend>();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const fetchUserFriends = useFriendshipStore(
@@ -29,7 +34,7 @@ export const MessagesSideBar = () => {
         sidebarRef.current &&
         !sidebarRef.current.contains(event.target as Node)
       ) {
-        setIsSidebarOpen(false);
+        setIsMessageSidebarOpen(false);
       }
     };
 
@@ -40,7 +45,7 @@ export const MessagesSideBar = () => {
       socket.off(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isMessageSidebarOpen]);
 
   function handleFriendLoggedOut(friendId: string) {
     const updatedUserFriends = userFriends.map((friend: IUserFriend) => {
@@ -72,7 +77,7 @@ export const MessagesSideBar = () => {
   }
 
   function toggleSidebar() {
-    setIsSidebarOpen(!isSidebarOpen);
+    setIsMessageSidebarOpen(!isMessageSidebarOpen);
   }
 
   return (
@@ -80,20 +85,20 @@ export const MessagesSideBar = () => {
       <div
         ref={sidebarRef}
         className={classNames(
-          "bg-primary h-screen absolute text-white transition-transform duration-300 z-40",
+          "bg-primary h-screen absolute text-white transition-transform duration-300 z-40 lg:right-0 w-72",
           {
-            "right-0 w-72": isSidebarOpen,
-            "-right-64 w-72": !isSidebarOpen,
+            "right-0 w-72": isMessageSidebarOpen,
+            hidden: !isMessageSidebarOpen,
           }
         )}
       >
         <div
-          className="p-2 cursor-pointer hover:bg-black"
+          className="p-2 cursor-pointer hover:bg-black text-white"
           onClick={toggleSidebar}
         >
-          {isSidebarOpen ? <ChevronRight /> : <ChevronLeft />}
+          {isMessageSidebarOpen && <X />}
         </div>
-        {isSidebarOpen &&
+        {isMessageSidebarOpen &&
           userFriends.map((friend: IUserFriend) => (
             <div
               className="w-full border-2 flex gap-4 flex-col border-white p-4 cursor-pointer"
