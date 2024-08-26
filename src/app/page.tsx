@@ -78,6 +78,9 @@ export default function Home() {
               <img
                 src={friendshipSugestion.avatar}
                 className="h-60 w-60 object-cover"
+                onClick={() =>
+                  router.push(`/profile/${friendshipSugestion.id}`)
+                }
               />
               {friendshipSugestion.friendshipRequestStatus === "not_sent" && (
                 <button

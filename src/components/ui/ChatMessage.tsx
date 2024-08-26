@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/lib/store/authStore";
 import classNames from "classnames";
-import { Receiver } from "../ChatPopOver";
+import { useRouter } from "next/navigation";
 import { IUserFriend } from "@/lib/store/friendshipStore";
 
 export type Message = {
@@ -13,11 +13,20 @@ export type Message = {
 export type ChatMessageProps = {
   message: Message;
   receiver: IUserFriend;
+  onClose: Function;
 };
 
-export const ChatMessage = ({ message, receiver }: ChatMessageProps) => {
+export const ChatMessage = ({
+  message,
+  receiver,
+  onClose,
+}: ChatMessageProps) => {
   const loggedUser = useAuthStore((state) => state.loggedUser);
-
+  const router = useRouter();
+  const navigateToProfile = () => {
+    onClose();
+    router.push(`/profile/${message.userId}`);
+  };
   return (
     <div
       key={message.id}
@@ -31,7 +40,10 @@ export const ChatMessage = ({ message, receiver }: ChatMessageProps) => {
       )}
     >
       {!message.isFromUser && (
-        <div className="flex flex-col items-center justify-center w-fit">
+        <div
+          className="flex flex-col items-center justify-center w-fit"
+          onClick={navigateToProfile}
+        >
           <img className="rounded-full w-20 h-20" src={receiver.avatar} />
           <span>{receiver.name}</span>
         </div>
@@ -80,7 +92,10 @@ export const ChatMessage = ({ message, receiver }: ChatMessageProps) => {
         ></div>
       </div>
       {message.isFromUser && (
-        <div className="flex flex-col items-center justify-center w-fit">
+        <div
+          className="flex flex-col items-center justify-center w-fit"
+          onClick={navigateToProfile}
+        >
           <img className="rounded-full w-20 h-20" src={loggedUser.avatar} />
           <span>{loggedUser.username}</span>
         </div>

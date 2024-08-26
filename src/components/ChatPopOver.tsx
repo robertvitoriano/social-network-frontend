@@ -197,7 +197,12 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
         >
           {messages.length > 0 &&
             messages.map((message, index) => (
-              <ChatMessage key={index} message={message} receiver={receiver} />
+              <ChatMessage
+                key={index}
+                message={message}
+                receiver={receiver}
+                onClose={handleClose}
+              />
             ))}
           {messages.length === 0 && (
             <div className="flex flex-1 flex-col items-center justify-center gap-8">
