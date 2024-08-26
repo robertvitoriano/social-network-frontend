@@ -4,9 +4,9 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { getProfile } from "@/api/get-profile";
 import { Spinner } from "@/components/Spinner";
-import { Post } from "./Post";
 import { MessageCircleMore, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Post } from "@/components/Post";
 
 const UserProfile = () => {
   const params = useParams<{ userId: string }>();
@@ -78,18 +78,20 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div className="mt-4 p-4">
-            <Input
-              className="bg-primary h-14 text-white"
-              placeholder={`Post something in ${user.name} timeline!`}
-            />
-          </div>
-          <div className="p-4 flex flex-col gap-4">
-            <Post user={user} />
-            <Post user={user} />
-            <Post user={user} />
-            <Post user={user} />
-            <Post user={user} />
+          <div>
+            <div className="mt-4 p-4">
+              <Input
+                className="bg-primary h-14 text-white"
+                placeholder={`Post something in ${user.name} timeline!`}
+              />
+            </div>
+            <div className="p-4 flex flex-col gap-4">
+              <Post user={user} />
+              <Post user={user} />
+              <Post user={user} />
+              <Post user={user} />
+              <Post user={user} />
+            </div>
           </div>
         </div>
       ) : (
