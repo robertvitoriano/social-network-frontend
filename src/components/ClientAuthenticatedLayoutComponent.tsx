@@ -33,7 +33,7 @@ export const ClientAuthenticatedLayoutComponent = () => {
             isMessageSidebarOpen={isMessageSidebarOpen}
             setIsMessageSidebarOpen={setIsMessageSidebarOpen}
           />
-          <div className="absolute rounded-full bg-black text-white bottom-12 right-12 p-2">
+          <div className="absolute rounded-full bg-black text-white bottom-20 right-12 p-2">
             <MessageCircleMore
               size={32}
               onClick={() => setIsMessageSidebarOpen(true)}
