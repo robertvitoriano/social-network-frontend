@@ -104,7 +104,7 @@ export function Header() {
         alt="Profile image"
         onClick={() => setOpenUpdateProfileModal(true)}
       />
-      <div className="relative">
+      <div className="relative mr-10">
         <Bell onClick={toggleNotificationsPopOver} />
         {isThereNotReadNotification && !isNotificationsPopOverOpen && (
           <div className="h-3 w-3 rounded-full bg-red-500 absolute top-0 z-40 right-0"></div>

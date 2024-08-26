@@ -80,7 +80,7 @@ export const MessagesSideBar = () => {
       <div
         ref={sidebarRef}
         className={classNames(
-          "bg-primary h-screen absolute text-white transition-transform duration-300",
+          "bg-primary h-screen absolute text-white transition-transform duration-300 z-40",
           {
             "right-0 w-72": isSidebarOpen,
             "-right-64 w-72": !isSidebarOpen,

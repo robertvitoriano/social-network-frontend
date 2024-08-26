@@ -181,7 +181,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   }
 
   return (
-    <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-10">
+    <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-50">
       {loading && <Spinner />}
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
         <h2 className="font-bold">Chat</h2>

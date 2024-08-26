@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="relative h-full overflow-hidden">
+        <div className="relative h-[100vh] flex flex-col overflow-hidden">
           <Toaster />
           <ClientAuthenticatedLayoutComponent>
             <Header />
