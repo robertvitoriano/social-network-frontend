@@ -52,15 +52,9 @@ const UserProfile = () => {
                 src={user.avatar}
                 className="h-36 w-36 rounded-full border-solid border-4 border-white"
               />
-              <div className="flex-col gap-1 hidden lg:flex">
-                <h2 className="text-2xl">{user.name}</h2>
-                <h2 className="text-base">
-                  <span className="font-bold">1.6 th </span> friends
-                </h2>
-              </div>
             </div>
           </div>
-          <div className="flex justify-between mt-14 pl-4 lg:hidden">
+          <div className="flex justify-between mt-14 pl-4 lg:mt-24">
             <div className="flex-col gap-1 flex">
               <h2 className="text-2xl">{user.name}</h2>
               <h2 className="text-base">
