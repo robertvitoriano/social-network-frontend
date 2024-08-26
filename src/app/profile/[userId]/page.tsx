@@ -6,6 +6,7 @@ import { getProfile } from "@/api/get-profile";
 import { Spinner } from "@/components/Spinner";
 import { Post } from "./Post";
 import { MessageCircleMore, UserCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const UserProfile = () => {
   const params = useParams<{ userId: string }>();
@@ -59,7 +60,7 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div className=" flex justify-between mt-14  lg:hidden">
+          <div className="flex justify-between mt-14 pl-4 lg:hidden">
             <div className="flex-col gap-1 flex">
               <h2 className="text-2xl">{user.name}</h2>
               <h2 className="text-base">
@@ -77,7 +78,17 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div className="p-4">
+          <div className="mt-4 p-4">
+            <Input
+              className="bg-primary h-14 text-white"
+              placeholder={`Post something in ${user.name} timeline!`}
+            />
+          </div>
+          <div className="p-4 flex flex-col gap-4">
+            <Post user={user} />
+            <Post user={user} />
+            <Post user={user} />
+            <Post user={user} />
             <Post user={user} />
           </div>
         </div>
