@@ -7,6 +7,7 @@ import { Spinner } from "@/components/Spinner";
 import { MessageCircleMore, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Post } from "@/components/Post";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const UserProfile = () => {
   const params = useParams<{ userId: string }>();
@@ -72,21 +73,49 @@ const UserProfile = () => {
               </div>
             </div>
           </div>
-          <div>
-            <div className="mt-4 p-4">
-              <Input
-                className="bg-primary h-14 text-white"
-                placeholder={`Post something in ${user.name} timeline!`}
-              />
-            </div>
-            <div className="p-4 flex flex-col gap-4">
-              <Post user={user} />
-              <Post user={user} />
-              <Post user={user} />
-              <Post user={user} />
-              <Post user={user} />
-            </div>
-          </div>
+          <Tabs defaultValue="feed" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-primary">
+              <TabsTrigger value="feed">feed</TabsTrigger>
+              <TabsTrigger value="media">media</TabsTrigger>
+            </TabsList>
+            <TabsContent value="feed">
+              <div>
+                <div className="mt-4 p-4">
+                  <Input
+                    className="bg-primary h-14 text-white"
+                    placeholder={`Post something in ${user.name} timeline!`}
+                  />
+                </div>
+                <div className="p-4 flex flex-col gap-4">
+                  <Post user={user} />
+                  <Post user={user} />
+                  <Post user={user} />
+                  <Post user={user} />
+                  <Post user={user} />
+                </div>
+              </div>
+            </TabsContent>
+            <TabsContent value="media">
+              <div className="flex flex-col gap-4">
+                <div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
+                    Photos
+                  </div>
+                  <div className="p-4">
+                    <span className="text-center">No photos found</span>
+                  </div>
+                </div>
+                <div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
+                    Videos
+                  </div>
+                  <div className="p-4">
+                    <span className="text-center">No Videos found</span>
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       ) : (
         <p>User not found</p>
