@@ -22,7 +22,7 @@ export type Receiver = {
   online: boolean;
 };
 
-export function Chat() {
+export default function Chat() {
   const [messages, setMessages] = useState<any[]>([]);
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const [currentMessageContent, setCurrentMessageContent] = useState("");
@@ -208,7 +208,6 @@ export function Chat() {
         >
           {messages.length > 0 &&
             messages.map((message, index) => (
-              //@ts-ignore
               <ChatMessage key={index} message={message} receiver={receiver!} />
             ))}
           {messages.length === 0 && (
