@@ -208,6 +208,7 @@ export function Chat() {
         >
           {messages.length > 0 &&
             messages.map((message, index) => (
+              //@ts-ignore
               <ChatMessage key={index} message={message} receiver={receiver!} />
             ))}
           {messages.length === 0 && (
