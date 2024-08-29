@@ -33,12 +33,12 @@ const UserProfile = () => {
     try {
       const userPostsResponse = await listUserFeedPosts(userId);
       setPosts([...posts, ...userPostsResponse.data.posts]);
-      if (loggedUser.id) {
-        setUser(loggedUser);
-        setIsLoggedUserProfile(true);
-      } else if (userId !== loggedUser.id) {
+      if (userId !== loggedUser.id) {
         const profileResponse = await getProfile(userId);
         setUser(profileResponse.data.profile);
+      } else if (loggedUser.id) {
+        setUser(loggedUser);
+        setIsLoggedUserProfile(true);
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
