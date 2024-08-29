@@ -33,20 +33,25 @@ const UserProfile = () => {
     try {
       const userPostsResponse = await listUserFeedPosts(userId);
       setPosts([...posts, ...userPostsResponse.data.posts]);
-      if (userId !== loggedUser.id) {
-        const profileResponse = await getProfile(userId);
-        setUser(profileResponse.data.profile);
-      } else if (loggedUser.id) {
-        setUser(loggedUser);
-        setIsLoggedUserProfile(true);
+      if (loggedUser.id) {
+        if (userId === loggedUser.id) {
+          setUser(loggedUser);
+          setIsLoggedUserProfile(true);
+          return;
+        }
+        return;
       }
+      await setFriendProfile(userId);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
       setLoading(false);
     }
   };
-
+  const setFriendProfile = async (userId: string) => {
+    const profileResponse = await getProfile(userId);
+    setUser(profileResponse.data.profile);
+  };
   const handlePostCreation = async () => {
     try {
       const currentTime = new Date();
