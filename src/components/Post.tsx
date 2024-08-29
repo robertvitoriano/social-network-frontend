@@ -1,30 +1,31 @@
 "use client";
 
+import { LoggedUser } from "@/lib/store/authStore";
 import { MoreHorizontal, Heart, MessageSquare, Share2 } from "lucide-react";
 export interface IPost {
   content: string;
   createdAt: string;
   id: string;
-  userId: string;
-  creatorAvatar: string;
-}
-
-interface Props {
-  user: {
+  creator: {
+    id: string;
+    email: string;
     name: string;
     avatar: string;
   };
+}
+
+interface Props {
   post: IPost;
 }
-export function Post({ user, post }: Props) {
+export function Post({ post }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div>
         <div className="flex justify-between">
           <div className="flex gap-4 items-center">
-            <img src={post.creatorAvatar} className="h-12 w-12 rounded-full" />
+            <img src={post.creator.avatar} className="h-12 w-12 rounded-full" />
             <div>
-              <h2 className="text-base font-bold">{user.name}</h2>
+              <h2 className="text-base font-bold">{post.creator.name}</h2>
               <h2 className="text-xs">
                 {new Date(post.createdAt).toLocaleDateString() +
                   " - " +
