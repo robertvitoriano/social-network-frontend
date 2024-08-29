@@ -6,14 +6,17 @@ import { getProfile } from "@/api/get-profile";
 import { Spinner } from "@/components/Spinner";
 import { MessageCircleMore, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Post } from "@/components/Post";
+import { IPost, Post } from "@/components/Post";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
+import { listUserFeedPosts } from "@/api/list-user-feed-posts";
+import { Button } from "@/components/ui/button";
+import { createUserPost } from "@/api/create-user-post";
 const UserProfile = () => {
   const params = useParams<{ userId: string }>();
   const [user, setUser] = useState<{ name: string; avatar: string }>();
   const [loading, setLoading] = useState(true);
-
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [friendPostContent, setFriendPostContent] = useState("");
   useEffect(() => {
     const userId = params.userId;
     if (userId) {
@@ -25,7 +28,33 @@ const UserProfile = () => {
   const loadProfile = async (userId: string) => {
     try {
       const profileResponse = await getProfile(userId);
+      const userPostsResponse = await listUserFeedPosts(userId);
       setUser(profileResponse.data.profile);
+      setPosts([...posts, ...userPostsResponse.data.posts]);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePostCreation = async () => {
+    try {
+      await createUserPost({
+        content: friendPostContent,
+        timelinedOwnerId: params.userId,
+      });
+      const currentTime = new Date();
+      setPosts([
+        {
+          id: params.userId,
+          content: friendPostContent,
+          userId: params.userId,
+          createdAt: currentTime.toISOString(),
+        },
+        ...posts,
+      ]);
+      setFriendPostContent("");
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
@@ -80,18 +109,22 @@ const UserProfile = () => {
             </TabsList>
             <TabsContent value="feed">
               <div>
-                <div className="mt-4 p-4">
+                <div className="mt-4 p-4 flex flex-col gap-4">
                   <Input
                     className="bg-primary h-14 text-white"
                     placeholder={`Post something in ${user.name} timeline!`}
+                    value={friendPostContent}
+                    onChange={(event) =>
+                      setFriendPostContent(event.target.value)
+                    }
                   />
+
+                  <Button onClick={handlePostCreation}>Post</Button>
                 </div>
                 <div className="p-4 flex flex-col gap-4">
-                  <Post user={user} />
-                  <Post user={user} />
-                  <Post user={user} />
-                  <Post user={user} />
-                  <Post user={user} />
+                  {posts.map((post) => (
+                    <Post user={user} key={post.id} post={post} />
+                  ))}
                 </div>
               </div>
             </TabsContent>

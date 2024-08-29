@@ -1,6 +1,6 @@
 import { api } from "./api";
 
-export async function listUserFeedPosts() {
-  const userFeedPostsResponse = await api.get("/feed");
+export async function listUserFeedPosts(userId: string) {
+  const userFeedPostsResponse = await api.get(`/feed/${userId}`);
   return userFeedPostsResponse;
 }
