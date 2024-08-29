@@ -11,12 +11,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { listUserFeedPosts } from "@/api/list-user-feed-posts";
 import { Button } from "@/components/ui/button";
 import { createUserPost } from "@/api/create-user-post";
+import { useAuthStore } from "@/lib/store/authStore";
+
 const UserProfile = () => {
   const params = useParams<{ userId: string }>();
   const [user, setUser] = useState<{ name: string; avatar: string }>();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<IPost[]>([]);
   const [friendPostContent, setFriendPostContent] = useState("");
+  const loggedUser = useAuthStore((state) => state.loggedUser);
   useEffect(() => {
     const userId = params.userId;
     if (userId) {
@@ -51,6 +54,7 @@ const UserProfile = () => {
           content: friendPostContent,
           userId: params.userId,
           createdAt: currentTime.toISOString(),
+          creatorAvatar: loggedUser.avatar,
         },
         ...posts,
       ]);
