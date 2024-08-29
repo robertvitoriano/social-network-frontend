@@ -1,7 +1,8 @@
 "use client";
 
-import { LoggedUser } from "@/lib/store/authStore";
-import { MoreHorizontal, Heart, MessageSquare, Share2 } from "lucide-react";
+import { useState } from "react";
+import { MoreHorizontal, Heart, Share2, MessageSquare } from "lucide-react";
+
 export interface IPost {
   content: string;
   createdAt: string;
@@ -17,7 +18,16 @@ export interface IPost {
 interface Props {
   post: IPost;
 }
+
 export function Post({ post }: Props) {
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
+
+  const toggleLike = () => {
+    setLiked(!liked);
+    setLikeCount(likeCount + (liked ? -1 : 1));
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -37,10 +47,29 @@ export function Post({ post }: Props) {
         </div>
       </div>
       <p>{post.content}</p>
+      <div className="flex justify-between">
+        <div className="flex gap-1">
+          <Heart
+            className={`w-5 h-5 ${
+              likeCount > 0 ? "fill-current text-red-500" : "hidden"
+            } `}
+          />
+          {likeCount > 0 && likeCount}
+        </div>
+        <div className="flex gap-4">
+          <div>3 comments</div>
+          <div>1 share</div>
+        </div>
+      </div>
       <div className="bg-primary rounded-md shadow-md p-4">
         <div className="flex justify-around text-white">
-          <div className="flex items-center gap-2 cursor-pointer">
-            <Heart className="w-5 h-5" />
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={toggleLike}
+          >
+            <Heart
+              className={`w-5 h-5 ${liked ? "fill-current text-red-500" : ""}`}
+            />
             <span>Like</span>
           </div>
           <div className="flex items-center gap-2 cursor-pointer">
