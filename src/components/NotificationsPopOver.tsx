@@ -18,7 +18,6 @@ export function NotificationsPopOver({
   const router = useRouter();
   useEffect(() => {
     handleReadNotifications();
-    console.log({ notifications });
   }, []);
 
   async function handleReadNotifications() {

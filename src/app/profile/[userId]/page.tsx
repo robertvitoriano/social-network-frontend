@@ -23,7 +23,6 @@ const UserProfile = () => {
   useEffect(() => {
     const userId = params.userId;
     if (userId) {
-      console.log("User ID:", userId);
       loadProfile(userId);
     }
   }, [params]);
