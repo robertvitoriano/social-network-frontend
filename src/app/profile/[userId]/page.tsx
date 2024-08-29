@@ -121,6 +121,11 @@ const UserProfile = () => {
                     onChange={(event) =>
                       setFriendPostContent(event.target.value)
                     }
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        handlePostCreation();
+                      }
+                    }}
                   />
 
                   <Button onClick={handlePostCreation}>Post</Button>
