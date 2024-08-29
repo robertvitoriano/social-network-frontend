@@ -42,10 +42,6 @@ const UserProfile = () => {
 
   const handlePostCreation = async () => {
     try {
-      await createUserPost({
-        content: friendPostContent,
-        timelinedOwnerId: params.userId,
-      });
       const currentTime = new Date();
       setPosts([
         {
@@ -61,6 +57,11 @@ const UserProfile = () => {
         },
         ...posts,
       ]);
+      await createUserPost({
+        content: friendPostContent,
+        timelinedOwnerId: params.userId,
+      });
+
       setFriendPostContent("");
     } catch (error) {
       console.error("Error fetching user profile:", error);
