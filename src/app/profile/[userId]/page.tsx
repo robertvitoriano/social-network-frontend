@@ -18,21 +18,28 @@ const UserProfile = () => {
   const [user, setUser] = useState<{ name: string; avatar: string }>();
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<IPost[]>([]);
-  const [friendPostContent, setFriendPostContent] = useState("");
+  const [newPostContent, setNewPostContent] = useState("");
+  const [isLoggedUserProfile, setIsLoggedUserProfile] = useState(false);
+
   const loggedUser = useAuthStore((state) => state.loggedUser);
   useEffect(() => {
     const userId = params.userId;
     if (userId) {
       loadProfile(userId);
     }
-  }, [params]);
+  }, [params, loggedUser]);
 
   const loadProfile = async (userId: string) => {
     try {
-      const profileResponse = await getProfile(userId);
       const userPostsResponse = await listUserFeedPosts(userId);
-      setUser(profileResponse.data.profile);
       setPosts([...posts, ...userPostsResponse.data.posts]);
+      if (loggedUser.id) {
+        setUser(loggedUser);
+        setIsLoggedUserProfile(true);
+      } else if (userId !== loggedUser.id) {
+        const profileResponse = await getProfile(userId);
+        setUser(profileResponse.data.profile);
+      }
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
@@ -46,7 +53,7 @@ const UserProfile = () => {
       setPosts([
         {
           id: params.userId,
-          content: friendPostContent,
+          content: newPostContent,
           createdAt: currentTime.toISOString(),
           creator: {
             id: loggedUser.id,
@@ -58,11 +65,11 @@ const UserProfile = () => {
         ...posts,
       ]);
       await createUserPost({
-        content: friendPostContent,
+        content: newPostContent,
         timelinedOwnerId: params.userId,
       });
 
-      setFriendPostContent("");
+      setNewPostContent("");
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
@@ -120,11 +127,13 @@ const UserProfile = () => {
                 <div className="mt-4 p-4 flex flex-col gap-4">
                   <Input
                     className="bg-primary h-14 text-white"
-                    placeholder={`Post something in ${user.name} timeline!`}
-                    value={friendPostContent}
-                    onChange={(event) =>
-                      setFriendPostContent(event.target.value)
+                    placeholder={
+                      isLoggedUserProfile
+                        ? "Tell your friends what you think!"
+                        : `Post something in ${user.name} timeline!`
                     }
+                    value={newPostContent}
+                    onChange={(event) => setNewPostContent(event.target.value)}
                     onKeyDown={(event) => {
                       if (event.key === "Enter") {
                         handlePostCreation();
@@ -132,7 +141,7 @@ const UserProfile = () => {
                     }}
                   />
 
-                  <Button onClick={handlePostCreation}>Post</Button>
+                  <Button onClick={handlePostCreation}>Create post!</Button>
                 </div>
                 <div className="p-4 flex flex-col gap-4">
                   {posts.map((post) => (

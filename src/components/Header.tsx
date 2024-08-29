@@ -8,7 +8,7 @@ import { listUserNotifications } from "@/api/list-user-notifications";
 import UpdateProfileModal from "./UpdateProfileModal";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useFriendshipStore } from "@/lib/store/friendshipStore";
-
+import { useRouter } from "next/navigation";
 export function Header() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationsPopOverOpen, setIsNotificationsPopOverOpen] =
@@ -21,6 +21,7 @@ export function Header() {
   const toggleNotificationsPopOver = () => {
     setIsNotificationsPopOverOpen((prev) => !prev);
   };
+  const router = useRouter();
 
   const fetchFriendshipSugestions = useFriendshipStore(
     (state) => state.fetchFriendshipSugestions
@@ -102,7 +103,7 @@ export function Header() {
         className="h-8 w-8 rounded-full bg-black cursor-pointer"
         src={loggedUser.avatar}
         alt="Profile image"
-        onClick={() => setOpenUpdateProfileModal(true)}
+        onClick={() => router.push(`/profile/${loggedUser.id}`)}
       />
       <div className="relative mr-10">
         <Bell onClick={toggleNotificationsPopOver} />
