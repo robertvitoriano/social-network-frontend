@@ -135,7 +135,7 @@ const UserProfile = () => {
                 </div>
                 <div className="p-4 flex flex-col gap-4">
                   {posts.map((post) => (
-                    <Post user={user} key={post.id} post={post} />
+                    <Post key={post.id} post={post} />
                   ))}
                 </div>
               </div>
