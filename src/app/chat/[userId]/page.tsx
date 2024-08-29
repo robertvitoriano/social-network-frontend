@@ -44,7 +44,6 @@ export default function Chat() {
   useEffect(() => {
     const userId = params.userId;
     if (userId) {
-      console.log("User ID:", userId);
       loadReceiver(userId);
     }
   }, [params]);
