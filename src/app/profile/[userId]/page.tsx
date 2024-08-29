@@ -51,9 +51,13 @@ const UserProfile = () => {
         {
           id: params.userId,
           content: friendPostContent,
-          userId: params.userId,
           createdAt: currentTime.toISOString(),
-          user: loggedUser,
+          creator: {
+            id: loggedUser.id,
+            name: loggedUser.name,
+            email: loggedUser.email,
+            avatar: loggedUser.avatar,
+          },
         },
         ...posts,
       ]);
