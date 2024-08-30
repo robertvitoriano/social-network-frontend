@@ -68,6 +68,7 @@ const UserProfile = () => {
           createdAt: currentTime.toISOString(),
           likesCount: 0,
           commentsCount: 0,
+          lastComment: null,
           creator: {
             id: loggedUser.id,
             name: loggedUser.name,
