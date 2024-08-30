@@ -54,6 +54,11 @@ const UserProfile = () => {
     setUser(profileResponse.data.profile);
   };
   const handlePostCreation = async () => {
+    if (!newPostContent.trim()) {
+      console.error("Cannot create a post with empty content.");
+      return;
+    }
+
     try {
       const currentTime = new Date();
       setPosts([
@@ -78,7 +83,7 @@ const UserProfile = () => {
 
       setNewPostContent("");
     } catch (error) {
-      console.error("Error fetching user profile:", error);
+      console.error("Error creating user post:", error);
     } finally {
       setLoading(false);
     }
