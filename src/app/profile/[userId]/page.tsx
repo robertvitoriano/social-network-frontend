@@ -41,7 +41,6 @@ const UserProfile = () => {
         }
         return;
       }
-      await setFriendProfile(userId);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
@@ -60,6 +59,7 @@ const UserProfile = () => {
           id: params.userId,
           content: newPostContent,
           createdAt: currentTime.toISOString(),
+          likesCount: 0,
           creator: {
             id: loggedUser.id,
             name: loggedUser.name,

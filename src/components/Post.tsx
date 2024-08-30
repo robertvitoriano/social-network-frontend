@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { MoreHorizontal, Heart, Share2, MessageSquare } from "lucide-react";
+import { togglePostLike } from "@/api/toggle-post-like";
 
 export interface IPost {
+  id: string;
   content: string;
   createdAt: string;
-  id: string;
+  likesCount: number;
   creator: {
     id: string;
     email: string;
@@ -20,12 +22,13 @@ interface Props {
 }
 
 export function Post({ post }: Props) {
-  const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(0);
+  const [liked, setLiked] = useState(!!post.likesCount);
+  const [likeCount, setLikeCount] = useState(post.likesCount);
 
-  const toggleLike = () => {
+  const toggleLike = async () => {
     setLiked(!liked);
     setLikeCount(likeCount + (liked ? -1 : 1));
+    await togglePostLike(post.id);
   };
 
   return (
