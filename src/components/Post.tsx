@@ -4,10 +4,14 @@ import { useState } from "react";
 import { MoreHorizontal, Heart, Share2, MessageSquare } from "lucide-react";
 import { togglePostLike } from "@/api/toggle-post-like";
 import { Input } from "./ui/input";
-import { useAuthStore } from "@/lib/store/authStore";
+import { LoggedUser, useAuthStore } from "@/lib/store/authStore";
+import { createPostComment } from "@/api/create-post-comment";
 export interface IComment {
-  id: string;
+  id?: string;
   content: string;
+  userId: string;
+  postId: string;
+  createdAt: Date;
   user: {
     id: string;
     email: string;
@@ -20,7 +24,8 @@ export interface IPost {
   content: string;
   createdAt: string;
   likesCount: number;
-  lastComment?: IComment;
+  commentsCount: number;
+  lastComment: IComment | null;
   creator: {
     id: string;
     email: string;
@@ -37,11 +42,28 @@ export function Post({ post }: Props) {
   const [liked, setLiked] = useState(!!post.likesCount);
   const [likeCount, setLikeCount] = useState(post.likesCount);
   const [newCommentContent, setNewCommentContent] = useState("");
+  const [lastComment, setLastComment] = useState<IComment | null>(
+    post.lastComment
+  );
+
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const toggleLike = async () => {
     setLiked(!liked);
     setLikeCount(likeCount + (liked ? -1 : 1));
     await togglePostLike(post.id);
+  };
+  const handleCommentCreation = async (event: { key: string }) => {
+    if (event.key === "Enter") {
+      setLastComment({
+        user: loggedUser,
+        content: newCommentContent,
+        userId: post.creator.id,
+        postId: post.id,
+        createdAt: new Date(),
+      });
+      await createPostComment({ content: newCommentContent, postId: post.id });
+      setNewCommentContent("");
+    }
   };
 
   return (
@@ -73,7 +95,7 @@ export function Post({ post }: Props) {
           {likeCount > 0 && likeCount}
         </div>
         <div className="flex gap-4">
-          <div className="hover:underline">3 comments</div>
+          <div className="hover:underline">{post.commentsCount} comments</div>
           <div className="hover:underline">1 share</div>
         </div>
       </div>
@@ -98,14 +120,20 @@ export function Post({ post }: Props) {
           </div>
         </div>
         <div className="p-4 flex flex-col gap-4">
-          {post.lastComment && (
+          {lastComment && (
             <div className="flex gap-4 items-center">
-              <img
-                src={post.lastComment.user.avatar}
-                className="h-10 w-10 rounded-full"
-              />
-              <div className="p-4 bg-secondary rounded-md">
-                <p>{post.lastComment.content}</p>
+              <div className="flex flex-col h-10 w-10 ">
+                <img src={lastComment.user.avatar} className="rounded-full" />
+              </div>
+              <div className="p-4 pt-1 bg-secondary rounded-md flex flex-1 flex-col gap-2">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold">{lastComment.user.name}</span>
+                  <span className="font-bold text-xs">
+                    {new Date(lastComment.createdAt).toLocaleDateString()}
+                    {/*  new Date(lastComment.createdAt).toLocaleTimeString()}  */}
+                  </span>
+                </div>
+                <p>{lastComment.content}</p>
               </div>
             </div>
           )}
@@ -116,11 +144,7 @@ export function Post({ post }: Props) {
               placeholder="Write a comment..."
               value={newCommentContent}
               onChange={(event) => setNewCommentContent(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter") {
-                  //create comment
-                }
-              }}
+              onKeyDown={handleCommentCreation}
             />
           </div>
         </div>

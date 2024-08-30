@@ -67,6 +67,7 @@ const UserProfile = () => {
           content: newPostContent,
           createdAt: currentTime.toISOString(),
           likesCount: 0,
+          commentsCount: 0,
           creator: {
             id: loggedUser.id,
             name: loggedUser.name,
