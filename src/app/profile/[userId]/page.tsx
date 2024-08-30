@@ -39,8 +39,10 @@ const UserProfile = () => {
           setIsLoggedUserProfile(true);
           return;
         }
+        await setFriendProfile(userId);
         return;
       }
+      await setFriendProfile(userId);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
