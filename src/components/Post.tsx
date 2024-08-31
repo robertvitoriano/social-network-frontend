@@ -8,12 +8,14 @@ import { LoggedUser, useAuthStore } from "@/lib/store/authStore";
 import { createPostComment } from "@/api/create-post-comment";
 import { Comment } from "./Comment";
 import { useRouter } from "next/navigation";
+import classNames from "classnames";
 export interface IComment {
   id?: string;
   content: string;
   userId: string;
   postId: string;
   createdAt: Date;
+  likesCount: number;
   user: {
     id: string;
     email: string;
@@ -65,6 +67,7 @@ export function Post({ post }: Props) {
         userId: post.user.id,
         postId: post.id,
         createdAt: new Date(),
+        likesCount: 0,
       });
       await createPostComment({ content: newCommentContent, postId: post.id });
       setNewCommentContent("");
@@ -98,11 +101,14 @@ export function Post({ post }: Props) {
       <p className="p-4">{post.content}</p>
       <div className="flex justify-between px-2 pb-1">
         <div className="flex gap-1">
-          <Heart
-            className={`w-5 h-5 ${
-              likeCount > 0 ? "fill-current text-red-500" : "hidden"
-            } `}
-          />
+          <div
+            className={classNames(
+              "bg-red-500 rounded-full p-1 justify-center items-center",
+              { flex: likeCount > 0, hidden: likeCount <= 0 }
+            )}
+          >
+            <Heart className={"w-4 h-4 fill-current text-white"} />
+          </div>
           {likeCount > 0 && likeCount}
         </div>
         <div className="flex gap-4">
