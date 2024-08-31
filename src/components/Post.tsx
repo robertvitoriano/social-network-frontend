@@ -6,6 +6,8 @@ import { togglePostLike } from "@/api/toggle-post-like";
 import { Input } from "./ui/input";
 import { LoggedUser, useAuthStore } from "@/lib/store/authStore";
 import { createPostComment } from "@/api/create-post-comment";
+import { Comment } from "./Comment";
+import { useRouter } from "next/navigation";
 export interface IComment {
   id?: string;
   content: string;
@@ -26,7 +28,8 @@ export interface IPost {
   likesCount: number;
   commentsCount: number;
   lastComment: IComment | null;
-  creator: {
+  comments: IComment[] | null;
+  user: {
     id: string;
     email: string;
     name: string;
@@ -47,6 +50,8 @@ export function Post({ post }: Props) {
   );
 
   const loggedUser = useAuthStore((state) => state.loggedUser);
+
+  const router = useRouter();
   const toggleLike = async () => {
     setLiked(!liked);
     setLikeCount(likeCount + (liked ? -1 : 1));
@@ -57,7 +62,7 @@ export function Post({ post }: Props) {
       setLastComment({
         user: loggedUser,
         content: newCommentContent,
-        userId: post.creator.id,
+        userId: post.user.id,
         postId: post.id,
         createdAt: new Date(),
       });
@@ -66,14 +71,20 @@ export function Post({ post }: Props) {
     }
   };
 
+  const handlePostPageRedirect = () => {
+    router.push(`/post/${post.id}`);
+  };
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <div className="flex justify-between">
-          <div className="flex gap-4 items-center">
-            <img src={post.creator.avatar} className="h-12 w-12 rounded-full" />
+        <div className="flex justify-between p-4">
+          <div
+            className="flex gap-4 items-center hover:underline cursor-pointer"
+            onClick={handlePostPageRedirect}
+          >
+            <img src={post.user.avatar} className="h-12 w-12 rounded-full" />
             <div>
-              <h2 className="text-base font-bold">{post.creator.name}</h2>
+              <h2 className="text-base font-bold">{post.user.name}</h2>
               <h2 className="text-xs">
                 {new Date(post.createdAt).toLocaleDateString() +
                   " - " +
@@ -84,8 +95,8 @@ export function Post({ post }: Props) {
           <MoreHorizontal />
         </div>
       </div>
-      <p>{post.content}</p>
-      <div className="flex justify-between">
+      <p className="p-4">{post.content}</p>
+      <div className="flex justify-between px-2 pb-1">
         <div className="flex gap-1">
           <Heart
             className={`w-5 h-5 ${
@@ -95,7 +106,9 @@ export function Post({ post }: Props) {
           {likeCount > 0 && likeCount}
         </div>
         <div className="flex gap-4">
-          <div className="hover:underline">{post.commentsCount} comments</div>
+          <div className="hover:underline" onClick={handlePostPageRedirect}>
+            {post.commentsCount} comments
+          </div>
           <div className="hover:underline">1 share</div>
         </div>
       </div>
@@ -120,23 +133,10 @@ export function Post({ post }: Props) {
           </div>
         </div>
         <div className="p-4 flex flex-col gap-4">
-          {lastComment && (
-            <div className="flex gap-4 items-center">
-              <div className="flex flex-col h-10 w-10 ">
-                <img src={lastComment.user.avatar} className="rounded-full" />
-              </div>
-              <div className="p-4 pt-1 bg-secondary rounded-md flex flex-1 flex-col gap-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-bold">{lastComment.user.name}</span>
-                  <span className="font-bold text-xs">
-                    {new Date(lastComment.createdAt).toLocaleDateString()}
-                    {/*  new Date(lastComment.createdAt).toLocaleTimeString()}  */}
-                  </span>
-                </div>
-                <p>{lastComment.content}</p>
-              </div>
-            </div>
-          )}
+          {lastComment && <Comment comment={lastComment} />}
+          {post.comments?.map((comment) => (
+            <Comment comment={comment} />
+          ))}
           <div className="flex gap-4">
             <img src={loggedUser.avatar} className="h-10 w-10 rounded-full" />
             <Input

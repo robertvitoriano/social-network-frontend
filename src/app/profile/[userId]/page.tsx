@@ -69,7 +69,8 @@ const UserProfile = () => {
           likesCount: 0,
           commentsCount: 0,
           lastComment: null,
-          creator: {
+          comments: null,
+          user: {
             id: loggedUser.id,
             name: loggedUser.name,
             email: loggedUser.email,
