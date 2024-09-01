@@ -9,7 +9,7 @@ import { MessageCircleMore, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { IPost, Post } from "@/components/Post";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { listUserFeedPosts } from "@/api/list-user-feed-posts";
+import { listUserFeedPosts } from "@/api/list-user-timeline-posts";
 import { Button } from "@/components/ui/button";
 import { createUserPost } from "@/api/create-user-post";
 import { DrawerDialog } from "@/components/DrawerDialog";
