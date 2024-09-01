@@ -14,19 +14,24 @@ import { Spinner } from "@/components/Spinner";
 import { useBeforeUnload } from "@/lib/hooks/useBeforeUnload";
 import socket from "@/api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
+import { IPost, Post } from "@/components/Post";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { createUserPost } from "@/api/create-user-post";
+import { FriendshipSuggestions } from "@/components/FriendshipSugestions";
+import { listUserFeedPosts } from "@/api/list-user-timeline-posts";
 
 export default function Home() {
+  const [newPostContent, setNewPostContent] = useState<string>("");
+  const [posts, setPosts] = useState<IPost[]>([]);
+
   const router = useRouter();
   const token = useAuthStore((state) => state.token);
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const rehydrated = useAuthStore((state) => state.rehydrated);
-  const frienshipSugestions = useFriendshipStore(
-    (state) => state.friendsSuggestions
-  );
-  const fetchFriendshipSugestions = useFriendshipStore(
-    (state) => state.fetchFriendshipSugestions
-  );
+
   const loading = useMainStore((state) => state.loading);
+  const setLoading = useMainStore((state) => state.setLoading);
 
   useBeforeUnload(() => {
     socket.emit(EventType.USER_OFFLINE, { userId: loggedUser.id });
@@ -38,106 +43,84 @@ export default function Home() {
     if (!token) {
       router.push("/auth/sign-in");
     } else {
-      fetchFriendshipSugestions();
       socket.emit(EventType.USER_ONLINE, { userId: loggedUser.id });
+      fetchFeedPosts();
     }
   }, [token, rehydrated]);
 
-  const handleFriendshipResponse = async (
-    friendshipSugestionId: string,
-    status: string
-  ) => {
-    toast("Friendship response sent!");
-    await sendFriendshipResponse(friendshipSugestionId, status);
-    await fetchFriendshipSugestions();
-  };
   const handleOffline = () => {};
-  const handleFriendshipRequest = async (friendId: string) => {
+  const handlePostCreation = async () => {
+    if (!newPostContent.trim()) {
+      console.error("Cannot create a post with empty content.");
+      return;
+    }
+
     try {
-      toast("Friendship resquest sent!");
-      await sendFriendshipRequest(friendId);
-      await fetchFriendshipSugestions();
+      const currentTime = new Date();
+      setPosts([
+        {
+          id: loggedUser.id,
+          content: newPostContent,
+          createdAt: currentTime.toISOString(),
+          likesCount: 0,
+          commentsCount: 0,
+          lastComment: null,
+          comments: null,
+          user: {
+            id: loggedUser.id,
+            name: loggedUser.name,
+            email: loggedUser.email,
+            avatar: loggedUser.avatar,
+          },
+        },
+        ...posts,
+      ]);
+      await createUserPost({
+        content: newPostContent,
+        timelinedOwnerId: loggedUser.id,
+      });
+
+      setNewPostContent("");
     } catch (error) {
-      console.error("Error sending friendship request:", error);
+      console.error("Error creating user post:", error);
+    } finally {
+      setLoading(false);
     }
   };
+  async function fetchFeedPosts() {
+    const timelinePostsResponse = await listUserFeedPosts(loggedUser.id);
 
+    setPosts(timelinePostsResponse.data.posts);
+    setLoading(false);
+  }
   return (
     <main className="flex h-screen flex-col p-10 bg-secondary text-white overflow-hidden">
-      <h1 className="text-center mb-10">Sugestions</h1>
-      {loading && <Spinner size={60} />}
-
+      {loading && <Spinner />}
       {!loading && (
-        <div className="grid grid-cols-1 h-[80%] md:grid-cols-2 lg:grid-cols-4 gap-10 overflow-auto md:h-fit">
-          {frienshipSugestions.map((friendshipSugestion) => (
-            <div
-              key={friendshipSugestion.id}
-              className="flex flex-col gap-4 justify-between items-center mb-4"
-            >
-              <span>{friendshipSugestion.name}</span>
-              <img
-                src={friendshipSugestion.avatar}
-                className="h-60 w-60 object-cover"
-                onClick={() =>
-                  router.push(`/profile/${friendshipSugestion.id}`)
-                }
-              />
-              {friendshipSugestion.friendshipRequestStatus === "not_sent" && (
-                <button
-                  onClick={() =>
-                    handleFriendshipRequest(friendshipSugestion.id)
+        <div className="overflow-auto">
+          <FriendshipSuggestions />
+          <div>
+            <div className="mt-4 p-4 flex flex-col gap-4">
+              <Input
+                className="bg-primary h-14 text-white"
+                placeholder={"Tell your friends what you think!"}
+                value={newPostContent}
+                onChange={(event) => setNewPostContent(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") {
+                    handlePostCreation();
                   }
-                  className="flex items-center bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
-                >
-                  <Send className="mr-2" size={18} />
-                  Send Friendship Request
-                </button>
-              )}
-              {friendshipSugestion.friendshipRequestStatus === "sent" && (
-                <span className="flex items-center text-black">
-                  <Clock className="mr-2" size={18} />
-                  Friendship request pending
-                </span>
-              )}
-              {friendshipSugestion.friendshipRequestStatus === "received" && (
-                <div className="flex flex-1 flex-col gap-2 pt-2">
-                  <User className="mr-2" size={18} />
-                  <span className="text-sm">wants to be your friend!</span>
-                  <div className="flex justify-around">
-                    <div className="p-2">
-                      <span
-                        className="cursor-pointer hover:underline"
-                        onClick={() =>
-                          handleFriendshipResponse(
-                            friendshipSugestion.id,
-                            FriendshipStatus.REJECTED
-                          )
-                        }
-                      >
-                        Ignore
-                      </span>
-                    </div>
-                    <div className="text-primary p-2 border-2 border-primary rounded-full">
-                      <span
-                        className="cursor-pointer"
-                        onClick={() =>
-                          handleFriendshipResponse(
-                            friendshipSugestion.id,
-                            FriendshipStatus.ACCEPTED
-                          )
-                        }
-                      >
-                        Accept
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
+                }}
+              />
+
+              <Button onClick={handlePostCreation}>Create post!</Button>
             </div>
-          ))}
-          {frienshipSugestions.length === 0 && (
-            <h1>No friend sugestion for now</h1>
-          )}
+            <div className="p-4 flex flex-col gap-4">
+              {posts.map((post) => (
+                <Post key={post.id} post={post} />
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </main>

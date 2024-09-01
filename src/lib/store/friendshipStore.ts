@@ -50,29 +50,19 @@ export const useFriendshipStore = create<IFriendshipStore>()(
           userFriends,
         })),
       fetchFriendshipSugestions: async () => {
-        const { setLoading } = useMainStore.getState();
-
         try {
-          setLoading(true);
           const response = await listNonFriends();
           set({ friendsSuggestions: response.data.nonFriends });
         } catch (error) {
           console.error("Error fetching friends suggestions:", error);
-        } finally {
-          setLoading(false);
         }
       },
       fetchUserFriends: async () => {
-        const { setLoading } = useMainStore.getState();
-
         try {
-          setLoading(true);
           const response = await listUserFriends();
           set({ userFriends: response.data.userFriends });
         } catch (error) {
           console.error("Error fetching user friends:", error);
-        } finally {
-          setLoading(false);
         }
       },
     }),
