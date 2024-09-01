@@ -7,6 +7,7 @@ export type LoggedUser = {
   email: string;
   username: string;
   avatar: string;
+  cover: string;
 };
 
 interface IAuthStore {
@@ -21,7 +22,14 @@ interface IAuthStore {
 export const useAuthStore = create<IAuthStore>()(
   persist<IAuthStore>(
     (set) => ({
-      loggedUser: { id: "", name: "", email: "", username: "", avatar: "" },
+      loggedUser: {
+        id: "",
+        name: "",
+        email: "",
+        username: "",
+        avatar: "",
+        cover: "",
+      },
       token: "",
       rehydrated: false,
       setLoggedUser: (loggedUser: LoggedUser) =>

@@ -2,33 +2,43 @@ import { LoggedUser } from "@/lib/store/authStore";
 import { api } from "./api";
 
 export interface UpdateFields {
-  email: string;
-  password: string;
-  name: string;
-  username: string;
-  avatar: FileList;
+  email?: string;
+  password?: string;
+  name?: string;
+  username?: string;
+  avatar?: FileList;
+  cover?: FileList;
+  fileBeingUploaded?: "avatar" | "cover";
 }
 
 export async function updateUserProfile({
   avatar,
-  email,
-  password,
-  name,
-  username,
+  cover,
+  ...data
 }: UpdateFields): Promise<LoggedUser | void> {
   const formData = new FormData();
-  formData.append("name", name);
-  formData.append("email", email);
-  formData.append("username", username);
-  formData.append("password", password);
-  if (avatar && avatar[0]) {
-    formData.append("avatar", avatar[0]);
+
+  for (const [propertyName, propertyValue] of Object.entries(data)) {
+    formData.append(propertyName, propertyValue);
   }
 
-  const signUpResponse = await api.patch("/users", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-  return signUpResponse.data.user;
+  if (avatar && avatar[0]) {
+    formData.append("avatar", avatar[0]);
+    formData.append("fileBeingUploaded", "avatar");
+  }
+  if (cover && cover[0]) {
+    formData.append("cover", cover[0]);
+    formData.append("fileBeingUploaded", "cover");
+  }
+
+  try {
+    const signUpResponse = await api.patch("/users", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return signUpResponse.data.user;
+  } catch (error) {
+    console.error("Error updating profile:", error);
+  }
 }
