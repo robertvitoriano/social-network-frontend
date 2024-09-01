@@ -50,7 +50,7 @@ export function Post({ post }: Props) {
   const [lastComment, setLastComment] = useState<IComment | null>(
     post.lastComment
   );
-
+  console.log({ lastComment });
   const loggedUser = useAuthStore((state) => state.loggedUser);
 
   const router = useRouter();
@@ -104,7 +104,7 @@ export function Post({ post }: Props) {
           <div
             className={classNames(
               "bg-red-500 rounded-full p-1 justify-center items-center",
-              { flex: likeCount > 0, hidden: likeCount <= 0 }
+              { flex: likeCount > 0, hidden: likeCount == 0 }
             )}
           >
             <Heart className={"w-4 h-4 fill-current text-white"} />
