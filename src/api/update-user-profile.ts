@@ -24,11 +24,9 @@ export async function updateUserProfile({
 
   if (avatar && avatar[0]) {
     formData.append("avatar", avatar[0]);
-    formData.append("fileBeingUploaded", "avatar");
   }
   if (cover && cover[0]) {
     formData.append("cover", cover[0]);
-    formData.append("fileBeingUploaded", "cover");
   }
 
   try {
