@@ -43,10 +43,12 @@ export function DrawerDialog({
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
+        <DialogContent className="sm:max-w-[425px] bg-secondary">
           <DialogHeader>
-            <DialogTitle>{dialogTitle}</DialogTitle>
-            <DialogDescription>{dialogDescription}</DialogDescription>
+            <DialogTitle className="text-white">{dialogTitle}</DialogTitle>
+            <DialogDescription className="text-white">
+              {dialogDescription}
+            </DialogDescription>
           </DialogHeader>
           {content}
         </DialogContent>
@@ -57,14 +59,18 @@ export function DrawerDialog({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="-left">
-          <DrawerTitle>{dialogTitle}</DrawerTitle>
-          <DrawerDescription>{dialogDescription}</DrawerDescription>
+      <DrawerContent className="bg-secondary">
+        <DrawerHeader>
+          <DrawerTitle className="text-white">{dialogTitle}</DrawerTitle>
+          <DrawerDescription className="text-white">
+            {dialogDescription}
+          </DrawerDescription>
         </DrawerHeader>
         {content}
         {footerContent && (
-          <DrawerFooter className="pt-2">{footerContent}</DrawerFooter>
+          <DrawerFooter className="pt-2 text-white">
+            {footerContent}
+          </DrawerFooter>
         )}
       </DrawerContent>
     </Drawer>
