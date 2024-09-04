@@ -97,7 +97,7 @@ export default function Home() {
     <>
       {loading && <Spinner />}
       {!loading && (
-        <div className="overflow-auto">
+        <div>
           <FriendshipSuggestions />
           <div>
             <div className="mt-4 p-4 flex flex-col gap-4">

@@ -22,12 +22,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="relative h-[100vh] flex flex-col overflow-hidden bg-secondary">
+        <div className="relative h-[100vh] flex flex-col bg-secondary">
           <Toaster />
           <ClientAuthenticatedLayoutComponent />
-          <main className="flex h-screen w-full max-w-[550px] m-auto flex-col  bg-secondary text-white">
-            {children}
-          </main>
+          <div className="overflow-auto">
+            <main className="flex h-screen w-full max-w-[550px] m-auto flex-col  bg-secondary text-white">
+              {children}
+            </main>
+          </div>
         </div>
       </body>
     </html>
