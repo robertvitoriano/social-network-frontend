@@ -25,7 +25,9 @@ export default function RootLayout({
         <div className="relative h-[100vh] flex flex-col overflow-hidden bg-secondary">
           <Toaster />
           <ClientAuthenticatedLayoutComponent />
-          {children}
+          <main className="flex h-screen w-full max-w-[550px] m-auto flex-col  bg-secondary text-white">
+            {children}
+          </main>
         </div>
       </body>
     </html>
