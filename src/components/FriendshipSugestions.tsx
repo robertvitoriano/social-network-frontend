@@ -70,47 +70,47 @@ export function FriendshipSuggestions() {
             {friendshipSugestion.friendshipRequestStatus === "not_sent" && (
               <button
                 onClick={() => handleFriendshipRequest(friendshipSugestion.id)}
-                className="flex items-center bg-blue-500 text-white h-14 px-4 rounded-md hover:bg-blue-600"
+                className="text-center flex gap-4 h-12 px-4 items-center justify-around bg-blue-500 rounded-md hover:bg-blue-600"
               >
                 <Send className="mr-2" size={18} />
                 add friend
               </button>
             )}
             {friendshipSugestion.friendshipRequestStatus === "sent" && (
-              <div className="text-center flex gap-4 items-center justify-around bg-gray-500 rounded-md h-14 px-4">
+              <div className="text-center flex gap-4 h-12 px-4 items-center justify-around bg-gray-500 rounded-md ">
                 <Clock size={30} />
                 <div>Friendship pending</div>
               </div>
             )}
             {friendshipSugestion.friendshipRequestStatus === "received" && (
-              <div className="flex flex-1 flex-col gap-2 pt-2 items-center">
-                <User className="mr-2" size={18} />
-                <span className="text-sm text-center">
-                  wants to be your friend!
-                </span>
-                <div className="flex justify-between gap-4 mt-2">
-                  <span
-                    className="cursor-pointer hover:underline"
-                    onClick={() =>
-                      handleFriendshipResponse(
-                        friendshipSugestion.id,
-                        FriendshipStatus.REJECTED
-                      )
-                    }
-                  >
-                    Ignore
-                  </span>
-                  <span
-                    className="cursor-pointer text-primary hover:underline"
-                    onClick={() =>
-                      handleFriendshipResponse(
-                        friendshipSugestion.id,
-                        FriendshipStatus.ACCEPTED
-                      )
-                    }
-                  >
-                    Accept
-                  </span>
+              <div className="text-center flex gap-4 h-14 px-2 items-center justify-around bg-primary rounded-md ">
+                <div className="flex gap-4">
+                  <div className=" bg-red-400 p-2 rounded-md">
+                    <span
+                      className="cursor-pointer text-white hover:underline"
+                      onClick={() =>
+                        handleFriendshipResponse(
+                          friendshipSugestion.id,
+                          FriendshipStatus.REJECTED
+                        )
+                      }
+                    >
+                      Ignore
+                    </span>
+                  </div>
+                  <div className=" bg-green-400  rounded-md p-2">
+                    <span
+                      className="cursor-pointer text-white hover:underline"
+                      onClick={() =>
+                        handleFriendshipResponse(
+                          friendshipSugestion.id,
+                          FriendshipStatus.ACCEPTED
+                        )
+                      }
+                    >
+                      Accept
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
