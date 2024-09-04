@@ -50,15 +50,13 @@ export function FriendshipSuggestions() {
   };
 
   return (
-    <div className="overflow-x-auto overflow-y-hidden flex-1 border-b-[3px] border-primary">
-      <h1 className="text-center mt-4 font-bold text-3xl">
-        Friendship Suggestions
-      </h1>
+    <div className="overflow-x-auto overflow-y-hidden flex-1 border-b-[3px] border-primary p-4">
       <div className="flex gap-4">
         {frienshipSugestions.map((friendshipSugestion) => (
           <div
             key={friendshipSugestion.id}
-            className="flex flex-col items-center gap-2 p-4 rounded-lg  bg-secondary"
+            className="flex flex-col items-center gap-2 p-4 rounded-lg bg-primary text-white mt-4"
+            style={{ width: "200px" }}
           >
             <span className="text-center font-medium whitespace-nowrap">
               {friendshipSugestion.name}
@@ -72,17 +70,17 @@ export function FriendshipSuggestions() {
             {friendshipSugestion.friendshipRequestStatus === "not_sent" && (
               <button
                 onClick={() => handleFriendshipRequest(friendshipSugestion.id)}
-                className="flex items-center bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                className="flex items-center bg-blue-500 text-white h-14 px-4 rounded-md hover:bg-blue-600"
               >
                 <Send className="mr-2" size={18} />
                 add friend
               </button>
             )}
             {friendshipSugestion.friendshipRequestStatus === "sent" && (
-              <span className="flex items-center text-black">
-                <Clock className="mr-2" size={18} />
-                Friendship pending
-              </span>
+              <div className="text-center flex gap-4 items-center justify-around bg-gray-500 rounded-md h-14 px-4">
+                <Clock size={30} />
+                <div>Friendship pending</div>
+              </div>
             )}
             {friendshipSugestion.friendshipRequestStatus === "received" && (
               <div className="flex flex-1 flex-col gap-2 pt-2 items-center">
@@ -119,6 +117,7 @@ export function FriendshipSuggestions() {
           </div>
         ))}
       </div>
+
       {frienshipSugestions.length === 0 && (
         <h1 className="text-center mt-4">No friend suggestions for now</h1>
       )}
