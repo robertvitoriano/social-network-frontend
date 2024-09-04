@@ -159,7 +159,7 @@ const UserProfile = () => {
   if (loading) return <Spinner />;
 
   return (
-    <div className="bg-secondary text-white flex flex-1 flex-col h-screen overflow-y-auto overflow-x-hidden">
+    <div className="bg-secondary text-white flex flex-1 flex-col h-screen">
       {user ? (
         <div>
           <div
