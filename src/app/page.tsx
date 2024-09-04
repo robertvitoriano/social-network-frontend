@@ -94,24 +94,30 @@ export default function Home() {
     setLoading(false);
   }
   return (
-    <main className="flex h-screen flex-col p-10 bg-secondary text-white overflow-hidden">
+    <main className="flex h-screen flex-col  bg-secondary text-white overflow-hidden">
       {loading && <Spinner />}
       {!loading && (
         <div className="overflow-auto">
           <FriendshipSuggestions />
           <div>
             <div className="mt-4 p-4 flex flex-col gap-4">
-              <Input
-                className="bg-primary h-14 text-white"
-                placeholder={"Tell your friends what you think!"}
-                value={newPostContent}
-                onChange={(event) => setNewPostContent(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    handlePostCreation();
-                  }
-                }}
-              />
+              <div className="flex gap-4">
+                <img
+                  src={loggedUser.avatar}
+                  className="h-14 w-14 rounded-full"
+                />
+                <Input
+                  className="bg-primary h-14 text-white"
+                  placeholder={"Tell your friends what you think!"}
+                  value={newPostContent}
+                  onChange={(event) => setNewPostContent(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      handlePostCreation();
+                    }
+                  }}
+                />
+              </div>
 
               <Button onClick={handlePostCreation}>Create post!</Button>
             </div>

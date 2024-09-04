@@ -1,7 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal, Heart, Share2, MessageSquare } from "lucide-react";
+import {
+  MoreHorizontal,
+  Heart,
+  Share2,
+  MessageSquare,
+  Send,
+} from "lucide-react";
 import { togglePostLike } from "@/api/toggle-post-like";
 import { Input } from "./ui/input";
 import { LoggedUser, useAuthStore } from "@/lib/store/authStore";
@@ -59,21 +65,23 @@ export function Post({ post }: Props) {
     setLikeCount(likeCount + (liked ? -1 : 1));
     await togglePostLike(post.id);
   };
-  const handleCommentCreation = async (event: { key: string }) => {
+  const handleCommentCreationOneEnter = async (event: { key: string }) => {
     if (event.key === "Enter") {
-      setLastComment({
-        user: loggedUser,
-        content: newCommentContent,
-        userId: post.user.id,
-        postId: post.id,
-        createdAt: new Date(),
-        likesCount: 0,
-      });
-      await createPostComment({ content: newCommentContent, postId: post.id });
-      setNewCommentContent("");
+      handleCommentCreation();
     }
   };
-
+  const handleCommentCreation = async (event: { key: string }) => {
+    setLastComment({
+      user: loggedUser,
+      content: newCommentContent,
+      userId: post.user.id,
+      postId: post.id,
+      createdAt: new Date(),
+      likesCount: 0,
+    });
+    await createPostComment({ content: newCommentContent, postId: post.id });
+    setNewCommentContent("");
+  };
   const handlePostPageRedirect = () => {
     router.push(`/post/${post.id}`);
   };
@@ -150,8 +158,19 @@ export function Post({ post }: Props) {
               placeholder="Write a comment..."
               value={newCommentContent}
               onChange={(event) => setNewCommentContent(event.target.value)}
-              onKeyDown={handleCommentCreation}
+              onKeyDown={handleCommentCreationOneEnter}
             />
+
+            <button
+              onClick={() => console.log("trying to create a post")}
+              className="flex items-center justify-center bg-transparent  border border-white p-2"
+            >
+              <Send
+                className="mr-2"
+                size={18}
+                onClick={handleCommentCreation}
+              />
+            </button>
           </div>
         </div>
       </div>

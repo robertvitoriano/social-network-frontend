@@ -50,7 +50,10 @@ export function FriendshipSuggestions() {
   };
 
   return (
-    <div className="overflow-x-auto overflow-y-hidden flex-1">
+    <div className="overflow-x-auto overflow-y-hidden flex-1 border-b-[3px] border-primary">
+      <h1 className="text-center mt-4 font-bold text-3xl">
+        Friendship Suggestions
+      </h1>
       <div className="flex gap-4">
         {frienshipSugestions.map((friendshipSugestion) => (
           <div
