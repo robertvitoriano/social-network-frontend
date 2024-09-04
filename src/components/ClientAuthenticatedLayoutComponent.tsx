@@ -28,17 +28,11 @@ export const ClientAuthenticatedLayoutComponent = () => {
     <>
       {isAuthenticated && (
         <>
-          <Header />
+          <Header openMessagesSideBar={() => setIsMessageSidebarOpen(true)} />
           <MessagesSideBar
             isMessageSidebarOpen={isMessageSidebarOpen}
             setIsMessageSidebarOpen={setIsMessageSidebarOpen}
           />
-          <div className="absolute rounded-full bg-black text-white bottom-20 right-12 p-2 cursor-pointer hover:bg-white hover:text-black">
-            <MessageCircleMore
-              size={32}
-              onClick={() => setIsMessageSidebarOpen(true)}
-            />
-          </div>
         </>
       )}
     </>

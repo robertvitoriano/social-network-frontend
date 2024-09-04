@@ -1,6 +1,6 @@
 "use client";
-import { Bell } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Bell, MessagesSquare } from "lucide-react";
+import { useState, useEffect, MouseEventHandler } from "react";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
 import { NotificationsPopOver } from "./NotificationsPopOver";
@@ -9,7 +9,11 @@ import UpdateProfileModal from "./UpdateProfileModal";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useFriendshipStore } from "@/lib/store/friendshipStore";
 import { useRouter } from "next/navigation";
-export function Header() {
+
+type Props = {
+  openMessagesSideBar: MouseEventHandler<SVGSVGElement>;
+};
+export function Header({ openMessagesSideBar }: Props) {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isNotificationsPopOverOpen, setIsNotificationsPopOverOpen] =
     useState(false);
@@ -105,7 +109,8 @@ export function Header() {
         alt="Profile image"
         onClick={() => router.push(`/profile/${loggedUser.id}`)}
       />
-      <div className="relative mr-10">
+      <div className="relative flex gap-4">
+        <MessagesSquare onClick={openMessagesSideBar} />
         <Bell onClick={toggleNotificationsPopOver} />
         {isThereNotReadNotification && !isNotificationsPopOverOpen && (
           <div className="h-3 w-3 rounded-full bg-red-500 absolute top-0 z-40 right-0"></div>

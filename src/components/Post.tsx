@@ -6,7 +6,7 @@ import {
   Heart,
   Share2,
   MessageSquare,
-  Send,
+  SendHorizonal,
 } from "lucide-react";
 import { togglePostLike } from "@/api/toggle-post-like";
 import { Input } from "./ui/input";
@@ -70,7 +70,7 @@ export function Post({ post }: Props) {
       handleCommentCreation();
     }
   };
-  const handleCommentCreation = async (event: { key: string }) => {
+  const handleCommentCreation = async () => {
     setLastComment({
       user: loggedUser,
       content: newCommentContent,
@@ -161,16 +161,11 @@ export function Post({ post }: Props) {
               onKeyDown={handleCommentCreationOneEnter}
             />
 
-            <button
-              onClick={() => console.log("trying to create a post")}
-              className="flex items-center justify-center bg-transparent  border border-white p-2"
-            >
-              <Send
-                className="mr-2"
-                size={18}
-                onClick={handleCommentCreation}
-              />
-            </button>
+            <SendHorizonal
+              className="mr-2"
+              size={40}
+              onClick={handleCommentCreation}
+            />
           </div>
         </div>
       </div>
