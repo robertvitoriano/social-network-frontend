@@ -94,7 +94,7 @@ export default function Home() {
     setLoading(false);
   }
   return (
-    <main className="flex h-screen flex-col  bg-secondary text-white overflow-hidden">
+    <main className="flex h-screen w-full max-w-[550px] m-auto flex-col  bg-secondary text-white overflow-hidden">
       {loading && <Spinner />}
       {!loading && (
         <div className="overflow-auto">
