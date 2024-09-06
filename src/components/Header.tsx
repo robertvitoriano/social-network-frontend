@@ -1,5 +1,5 @@
 "use client";
-import { Bell, MessagesSquare } from "lucide-react";
+import { Bell, MessagesSquare, Settings } from "lucide-react";
 import { useState, useEffect, MouseEventHandler } from "react";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
@@ -109,12 +109,18 @@ export function Header({ openMessagesSideBar }: Props) {
         alt="Profile image"
         onClick={() => router.push(`/profile/${loggedUser.id}`)}
       />
-      <div className="relative flex gap-4">
+      <div className="flex gap-4">
         <MessagesSquare onClick={openMessagesSideBar} />
-        <Bell onClick={toggleNotificationsPopOver} />
-        {isThereNotReadNotification && !isNotificationsPopOverOpen && (
-          <div className="h-3 w-3 rounded-full bg-red-500 absolute top-0 z-40 right-0"></div>
-        )}
+        <div className="relative flex">
+          <Bell onClick={toggleNotificationsPopOver} />
+          {isThereNotReadNotification && !isNotificationsPopOverOpen && (
+            <div className="h-3 w-3 rounded-full bg-red-500 absolute top-0 z-40 right-0"></div>
+          )}
+        </div>
+        <Settings
+          className="cursor-pointer"
+          onClick={() => setOpenUpdateProfileModal(true)}
+        />
       </div>
       {isNotificationsPopOverOpen && (
         <NotificationsPopOver

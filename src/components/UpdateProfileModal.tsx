@@ -9,10 +9,7 @@ import { useRouter } from "next/navigation";
 
 export type UpdateProfileFormInputs = {
   name: string;
-  email: string;
   username: string;
-  password: string;
-  avatar: FileList;
 };
 
 const UpdateProfileModal: React.FC<{
@@ -28,26 +25,17 @@ const UpdateProfileModal: React.FC<{
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const setLoggedUser = useAuthStore((state) => state.setLoggedUser);
 
-  const [avatarURL, setAvatarURL] = useState<string | null>(
-    loggedUser.avatar || ""
-  );
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
     setValue("name", loggedUser.name);
-    setValue("email", loggedUser.email);
     setValue("username", loggedUser.username);
-    setAvatarURL(loggedUser.avatar);
   }, [loggedUser, setValue]);
 
   const onSubmit = async (data: UpdateProfileFormInputs) => {
-    const avatar = fileInputRef.current?.files;
-
-    const { name, username, email } = data;
-    if (!avatar) return;
-    setLoggedUser({ ...loggedUser, name, username, email, avatar: avatarURL! });
-    updateUserProfile({ ...data, avatar })
+    const { name, username } = data;
+    setLoggedUser({ ...loggedUser, name, username });
+    updateUserProfile({ ...data })
       .then((updatedUser) => {
         if (updatedUser) {
           setLoggedUser(updatedUser);
@@ -58,20 +46,6 @@ const UpdateProfileModal: React.FC<{
       });
 
     onClose();
-  };
-
-  const handleOpenFilePicker = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      if (file) {
-        const url = URL.createObjectURL(file);
-        setAvatarURL(url);
-      }
-    }
   };
 
   const handleLogout = async () => {
@@ -119,46 +93,6 @@ const UpdateProfileModal: React.FC<{
             {errors.username && (
               <p className="text-red-500 text-sm">{errors.username.message}</p>
             )}
-          </div>
-          <div className="mb-4">
-            <label className="block mb-2" htmlFor="email">
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              {...register("email", { required: "Email is required" })}
-              className="w-full px-3 py-2 border text-primary  border-gray-300 rounded"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
-            )}
-          </div>
-          <div className="mb-4 relative">
-            <div
-              style={{
-                backgroundImage: `url(${avatarURL})`,
-              }}
-              className="h-32 w-32 bg-cover bg-center bg-black rounded-full border-4 border-secondary border-solid cursor-pointer"
-            >
-              <div
-                className=" w-full h-full flex items-center justify-center bg-gray-700 bg-opacity-50 rounded-full opacity-0 hover:opacity-100 transition-opacity duration-300"
-                onClick={handleOpenFilePicker}
-              >
-                <span className="text-white text-lg text-center">
-                  Change avatar
-                </span>
-                <label htmlFor="avatar">
-                  <input
-                    ref={fileInputRef}
-                    id="avatar"
-                    type="file"
-                    className="hidden"
-                    onChange={handleFileChange}
-                  />
-                </label>
-              </div>
-            </div>
           </div>
 
           <div className="flex justify-between items-center">
