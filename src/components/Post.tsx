@@ -37,6 +37,7 @@ export interface IPost {
   commentsCount: number;
   lastComment: IComment | null;
   comments: IComment[] | null;
+  sharesCount: number;
   user: {
     id: string;
     email: string;
@@ -52,6 +53,8 @@ interface Props {
 export function Post({ post }: Props) {
   const [liked, setLiked] = useState(!!post.likesCount);
   const [likeCount, setLikeCount] = useState(post.likesCount);
+  const [commentsCount, setCommentscount] = useState(post.commentsCount);
+  const [sharesCount, setSharescount] = useState(post.sharesCount || 0);
   const [newCommentContent, setNewCommentContent] = useState("");
   const [lastComment, setLastComment] = useState<IComment | null>(
     post.lastComment
@@ -71,6 +74,7 @@ export function Post({ post }: Props) {
     }
   };
   const handleCommentCreation = async () => {
+    setCommentscount(commentsCount + 1);
     setLastComment({
       user: loggedUser,
       content: newCommentContent,
@@ -120,10 +124,14 @@ export function Post({ post }: Props) {
           {likeCount > 0 && likeCount}
         </div>
         <div className="flex gap-4">
-          <div className="hover:underline" onClick={handlePostPageRedirect}>
-            {post.commentsCount} comments
-          </div>
-          <div className="hover:underline">1 share</div>
+          {commentsCount > 0 && (
+            <div className="hover:underline" onClick={handlePostPageRedirect}>
+              {commentsCount} comments
+            </div>
+          )}
+          {sharesCount > 0 && (
+            <div className="hover:underline">{sharesCount} share</div>
+          )}
         </div>
       </div>
       <div className="bg-primary rounded-md shadow-md p-4">

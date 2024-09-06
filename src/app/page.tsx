@@ -66,6 +66,7 @@ export default function Home() {
           commentsCount: 0,
           lastComment: null,
           comments: null,
+          sharesCount: 0,
           user: {
             id: loggedUser.id,
             name: loggedUser.name,
