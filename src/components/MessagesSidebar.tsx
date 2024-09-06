@@ -84,10 +84,13 @@ export const MessagesSideBar = ({
     <>
       <div
         ref={sidebarRef}
-        className={classNames("bg-primary h-screen absolute text-white z-40", {
-          "right-0 w-72": isMessageSidebarOpen,
-          hidden: !isMessageSidebarOpen,
-        })}
+        className={classNames(
+          "bg-primary h-screen absolute text-white z-40 overflow-y-auto",
+          {
+            "right-0 w-72": isMessageSidebarOpen,
+            hidden: !isMessageSidebarOpen,
+          }
+        )}
       >
         <div
           className="p-2 cursor-pointer hover:bg-black text-white"
