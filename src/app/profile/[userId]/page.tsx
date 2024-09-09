@@ -180,7 +180,7 @@ const UserProfile = () => {
                 }}
                 className="h-36 w-36 relative rounded-full border-solid border-4 border-white"
               >
-                <DrawerDialog
+                { isLoggedUserProfile && <DrawerDialog
                   dialogTitle="Avatar Options"
                   dialogDescription="Select an option for your avatar"
                   trigger={
@@ -218,10 +218,10 @@ const UserProfile = () => {
                       </Button>
                     </div>
                   }
-                />
+                />}
               </div>
             </div>
-            <DrawerDialog
+            {isLoggedUserProfile && <DrawerDialog
               dialogTitle="Avatar Options"
               dialogDescription="Select an option for your avatar"
               trigger={
@@ -258,7 +258,7 @@ const UserProfile = () => {
                   </Button>
                 </div>
               }
-            />
+            />}
           </div>
           <div className="flex justify-between mt-14 pl-4 lg:mt-24">
             <div className="flex-col gap-1 flex">
