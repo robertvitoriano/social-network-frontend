@@ -184,7 +184,8 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
     <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-primary text-white z-50 rounded-md border border-white sm:max-w-72 sm:right-40 sm:top-auto sm:bottom-2 sm:h-96">
       {loading && <Spinner />}
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
-        <h2 className="font-bold">Chat</h2>
+      <img className="rounded-full w-10 h-10 sm:w-10 sm:h-10" src={receiver.avatar} />
+        <h2 className="font-bold">{receiver.name}</h2>
         <button onClick={handleClose} className="text-white cursor-pointer">
           X
         </button>

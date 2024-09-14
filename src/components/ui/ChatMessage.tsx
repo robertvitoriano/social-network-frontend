@@ -16,11 +16,7 @@ export type ChatMessageProps = {
   onClose: Function;
 };
 
-export const ChatMessage = ({
-  message,
-  receiver,
-  onClose,
-}: ChatMessageProps) => {
+export const ChatMessage = ({ message, receiver, onClose }: ChatMessageProps) => {
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const router = useRouter();
   const navigateToProfile = () => {
@@ -40,12 +36,8 @@ export const ChatMessage = ({
       )}
     >
       {!message.isFromUser && (
-        <div
-          className="flex flex-col items-center justify-center w-fit"
-          onClick={navigateToProfile}
-        >
+        <div className="flex flex-col items-center justify-end w-fit" onClick={navigateToProfile}>
           <img className="rounded-full w-10 h-10" src={receiver.avatar} />
-          <span>{receiver.name}</span>
         </div>
       )}
       <div
@@ -54,7 +46,7 @@ export const ChatMessage = ({
           "rounded-xl",
           "relative",
           "w-full",
-          "sm:w-[100px]",
+          "sm:w-[150px]",
           { "text-black": message.isFromUser },
           { "bg-white": message.isFromUser },
           { "bg-black": !message.isFromUser },
@@ -76,8 +68,6 @@ export const ChatMessage = ({
         <div
           className={classNames(
             "absolute",
-            { "right-[-6px]": message.isFromUser },
-            { "left-[-6px]": !message.isFromUser },
             "bottom-0",
             "w-0",
             "h-0",
@@ -86,20 +76,10 @@ export const ChatMessage = ({
             "border-r-[8px]",
             "border-b-[16px]",
             "border-transparent",
-            { "border-b-black": !message.isFromUser },
-            { "border-b-white": message.isFromUser }
+            { "border-b-black": !message.isFromUser, "left-[-6px]": !message.isFromUser, "hidden":message.isFromUser }
           )}
         ></div>
       </div>
-      {message.isFromUser && (
-        <div
-          className="flex flex-col items-center justify-center w-fit"
-          onClick={navigateToProfile}
-        >
-          <img className="rounded-full w-10 h-10" src={loggedUser.avatar} />
-          <span>{loggedUser.username}</span>
-        </div>
-      )}
     </div>
   );
 };
