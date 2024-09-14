@@ -13,8 +13,7 @@ export const useMainStore = create<IMainStore>()(
       setLoading: (loading: boolean) => set({ loading }),
     }),
     {
-      name: "Main-store",
-      storage: createJSONStorage(() => localStorage),
+      name: "Chat-store",
     }
   )
 );

@@ -1,28 +1,22 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { ChatPopOver } from "./ChatPopOver";
 import classNames from "classnames";
 import socket from "../api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { IUserFriend, useFriendshipStore } from "@/lib/store/friendshipStore";
+import { useChatStore } from "@/lib/store/chatStore";
 type Props = {
   isMessageSidebarOpen: boolean;
   setIsMessageSidebarOpen: Function;
 };
-export const MessagesSideBar = ({
-  isMessageSidebarOpen,
-  setIsMessageSidebarOpen,
-}: Props) => {
-  const [showChat, setShowChat] = useState(false);
-  const [friendInCurrentChat, setFriendInCurrentChat] = useState<IUserFriend>();
+export const MessagesSideBar = ({ isMessageSidebarOpen, setIsMessageSidebarOpen }: Props) => {
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  const fetchUserFriends = useFriendshipStore(
-    (state) => state.fetchUserFriends
-  );
+  const fetchUserFriends = useFriendshipStore((state) => state.fetchUserFriends);
   const setUserFriends = useFriendshipStore((state) => state.setUserFriends);
   const userFriends = useFriendshipStore((state) => state.userFriends);
+  const openChatDialog = useChatStore((state) => state.openChatDialog);
 
   useEffect(() => {
     fetchUserFriends();
@@ -30,10 +24,7 @@ export const MessagesSideBar = ({
     socket.on(EventType.FRIEND_LOGGED_OUT, handleFriendLoggedOut);
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        sidebarRef.current &&
-        !sidebarRef.current.contains(event.target as Node)
-      ) {
+      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
         setIsMessageSidebarOpen(false);
       }
     };
@@ -68,12 +59,7 @@ export const MessagesSideBar = ({
   }
 
   async function handleChatOpen(friend: IUserFriend) {
-    setShowChat(true);
-    setFriendInCurrentChat(friend);
-  }
-
-  function handleChatClose() {
-    setShowChat(false);
+    openChatDialog(friend.id, friend.friendshipId);
   }
 
   function toggleSidebar() {
@@ -84,18 +70,12 @@ export const MessagesSideBar = ({
     <>
       <div
         ref={sidebarRef}
-        className={classNames(
-          "bg-primary h-screen absolute text-white z-40 overflow-y-auto",
-          {
-            "right-0 w-72": isMessageSidebarOpen,
-            hidden: !isMessageSidebarOpen,
-          }
-        )}
+        className={classNames("bg-primary h-screen absolute text-white z-40 overflow-y-auto", {
+          "right-0 w-72": isMessageSidebarOpen,
+          hidden: !isMessageSidebarOpen,
+        })}
       >
-        <div
-          className="p-2 cursor-pointer hover:bg-black text-white"
-          onClick={toggleSidebar}
-        >
+        <div className="p-2 cursor-pointer hover:bg-black text-white" onClick={toggleSidebar}>
           {isMessageSidebarOpen && <X />}
         </div>
         {isMessageSidebarOpen &&
@@ -131,9 +111,6 @@ export const MessagesSideBar = ({
             </div>
           ))}
       </div>
-      {friendInCurrentChat && showChat && (
-        <ChatPopOver receiver={friendInCurrentChat} onClose={handleChatClose} />
-      )}
     </>
   );
 };

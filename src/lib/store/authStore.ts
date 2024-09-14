@@ -14,9 +14,9 @@ interface IAuthStore {
   loggedUser: LoggedUser;
   token: string;
   rehydrated: boolean;
+  setRehydrated: (rehydrated: boolean) => void;
   setLoggedUser: (loggedUser: LoggedUser) => void;
   setToken: (token: string) => void;
-  setRehydrated: (rehydrated: boolean) => void;
 }
 
 export const useAuthStore = create<IAuthStore>()(

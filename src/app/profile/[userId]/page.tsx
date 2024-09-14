@@ -15,10 +15,11 @@ import { createUserPost } from "@/api/create-user-post";
 import { DrawerDialog } from "@/components/DrawerDialog";
 import { updateUserProfile } from "@/api/update-user-profile";
 import { useAuthStore } from "@/lib/store/authStore";
+import { useChatStore } from "@/lib/store/chatStore";
 
 const UserProfile = () => {
   const params = useParams<{ userId: string }>();
-  const [user, setUser] = useState<{ name: string; avatar: string }>();
+  const [user, setUser] = useState<{ id: string; name: string; avatar: string; friendshipId?: string }>();
   const [avatarUrl, setAvatarUrl] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [loading, setLoading] = useState(true);
@@ -31,6 +32,7 @@ const UserProfile = () => {
 
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const setLoggedUser = useAuthStore((state) => state.setLoggedUser);
+  const openChatDialog = useChatStore((state) => state.openChatDialog);
 
   useEffect(() => {
     const userId = params.userId;
@@ -46,6 +48,8 @@ const UserProfile = () => {
       if (loggedUser.id) {
         if (userId === loggedUser.id) {
           setUser(loggedUser);
+          setAvatarUrl(loggedUser.avatar);
+          setCoverUrl(loggedUser.cover);
           setIsLoggedUserProfile(true);
           return;
         }
@@ -60,10 +64,12 @@ const UserProfile = () => {
     }
   };
   const setFriendProfile = async (userId: string) => {
-    const profileResponse = await getProfile(userId);
-    setUser(profileResponse.data.profile);
-    setAvatarUrl(profileResponse.data.profile.avatar);
-    setCoverUrl(profileResponse.data.profile.cover);
+    const {
+      data: { profile, friendshipId, avatar, cover },
+    } = await getProfile(userId);
+    setUser({ ...profile, friendshipId: friendshipId });
+    setAvatarUrl(profile.avatar);
+    setCoverUrl(profile.cover);
   };
   const handlePostCreation = async () => {
     if (!newPostContent.trim()) {
@@ -109,9 +115,7 @@ const UserProfile = () => {
     avatarFileInputRef.current?.click();
   };
 
-  const handleAvatarFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleAvatarFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0];
       if (file) {
@@ -133,9 +137,7 @@ const UserProfile = () => {
       }
     }
   };
-  const handleCoverFileChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleCoverFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0];
       if (file) {
@@ -180,85 +182,77 @@ const UserProfile = () => {
                 }}
                 className="h-36 w-36 relative rounded-full border-solid border-4 border-white"
               >
-                { isLoggedUserProfile && <DrawerDialog
-                  dialogTitle="Avatar Options"
-                  dialogDescription="Select an option for your avatar"
-                  trigger={
-                    <div className="p-1 flex justify-center items-center absolute right-4 bottom-0 bg-primary border border-green rounded-full">
-                      <Camera
-                        className="text-secondary h-4 w-4 cursor-pointer"
-                        color="white"
-                      />
-                    </div>
-                  }
-                  content={
-                    <div className="flex flex-col gap-4 pb-4 hover:underline">
-                      <Button
-                        onClick={() => {
-                          console.log("View Avatar clicked");
-                        }}
-                      >
-                        View Avatar
-                      </Button>
+                {isLoggedUserProfile && (
+                  <DrawerDialog
+                    dialogTitle="Avatar Options"
+                    dialogDescription="Select an option for your avatar"
+                    trigger={
+                      <div className="p-1 flex justify-center items-center absolute right-4 bottom-0 bg-primary border border-green rounded-full">
+                        <Camera className="text-secondary h-4 w-4 cursor-pointer" color="white" />
+                      </div>
+                    }
+                    content={
+                      <div className="flex flex-col gap-4 pb-4 hover:underline">
+                        <Button
+                          onClick={() => {
+                            console.log("View Avatar clicked");
+                          }}
+                        >
+                          View Avatar
+                        </Button>
 
-                      <Button
-                        onClick={handleOpenFilePicker}
-                        className="flex flex-1"
-                      >
-                        <label htmlFor="avatar">
-                          <input
-                            ref={avatarFileInputRef}
-                            id="avatar"
-                            type="file"
-                            className="hidden"
-                            onChange={handleAvatarFileChange}
-                          />
-                          Change Avatar
-                        </label>
-                      </Button>
-                    </div>
-                  }
-                />}
+                        <Button onClick={handleOpenFilePicker} className="flex flex-1">
+                          <label htmlFor="avatar">
+                            <input
+                              ref={avatarFileInputRef}
+                              id="avatar"
+                              type="file"
+                              className="hidden"
+                              onChange={handleAvatarFileChange}
+                            />
+                            Change Avatar
+                          </label>
+                        </Button>
+                      </div>
+                    }
+                  />
+                )}
               </div>
             </div>
-            {isLoggedUserProfile && <DrawerDialog
-              dialogTitle="Avatar Options"
-              dialogDescription="Select an option for your avatar"
-              trigger={
-                <div className="p-1 flex justify-center items-center absolute right-4 bottom-4 bg-primary border border-white rounded-full">
-                  <Camera
-                    className="text-secondary h-4 w-4 cursor-pointer"
-                    color="white"
-                  />
-                </div>
-              }
-              content={
-                <div className="flex flex-col gap-4 pb-4 hover:underline">
-                  <Button
-                    onClick={() => {
-                      console.log("View Avatar clicked");
-                    }}
-                  >
-                    View Cover
-                  </Button>
-                  <Button
-                    onClick={handleOpenFilePicker}
-                    className="flex flex-1"
-                  >
-                    <label htmlFor="cover">
-                      <input
-                        ref={coverFileInputRef}
-                        id="cover"
-                        type="file"
-                        className="hidden"
-                        onChange={handleCoverFileChange}
-                      />
-                      Change Cover
-                    </label>
-                  </Button>
-                </div>
-              }
-            />}
+            {isLoggedUserProfile && (
+              <DrawerDialog
+                dialogTitle="Avatar Options"
+                dialogDescription="Select an option for your avatar"
+                trigger={
+                  <div className="p-1 flex justify-center items-center absolute right-4 bottom-4 bg-primary border border-white rounded-full">
+                    <Camera className="text-secondary h-4 w-4 cursor-pointer" color="white" />
+                  </div>
+                }
+                content={
+                  <div className="flex flex-col gap-4 pb-4 hover:underline">
+                    <Button
+                      onClick={() => {
+                        console.log("View Avatar clicked");
+                      }}
+                    >
+                      View Cover
+                    </Button>
+                    <Button onClick={handleOpenFilePicker} className="flex flex-1">
+                      <label htmlFor="cover">
+                        <input
+                          ref={coverFileInputRef}
+                          id="cover"
+                          type="file"
+                          className="hidden"
+                          onChange={handleCoverFileChange}
+                        />
+                        Change Cover
+                      </label>
+                    </Button>
+                  </div>
+                }
+              />
+            )}
           </div>
           <div className="flex justify-between mt-14 pl-4 lg:mt-24">
             <div className="flex-col gap-1 flex">
@@ -267,16 +261,21 @@ const UserProfile = () => {
                 <span className="font-bold">1.6 th </span> friends
               </h2>
             </div>
-            <div className="flex gap-4 p-2">
-              <div className="bg-primary p-2 h-fit flex gap-4 rounded-md text-sm items-center">
-                <UserCheck />
-                Friends
+            {user.friendshipId && (
+              <div className="flex gap-4 p-2">
+                <div className="bg-primary p-2 h-fit flex gap-4 rounded-md text-sm items-center">
+                  <UserCheck />
+                  Friends
+                </div>
+                <div
+                  className="bg-primary p-2 h-fit flex gap-4 rounded-md text-sm items-center cursor-pointer"
+                  onClick={() => openChatDialog(user.id, user.friendshipId!)}
+                >
+                  <MessageCircleMore />
+                  Message
+                </div>
               </div>
-              <div className="bg-primary p-2 h-fit flex gap-4 rounded-md text-sm items-center">
-                <MessageCircleMore />
-                Message
-              </div>
-            </div>
+            )}
           </div>
           <Tabs defaultValue="timeline" className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-primary">
@@ -314,17 +313,13 @@ const UserProfile = () => {
             <TabsContent value="media">
               <div className="flex flex-col gap-4">
                 <div>
-                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
-                    Photos
-                  </div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">Photos</div>
                   <div className="p-4">
                     <span className="text-center">No photos found</span>
                   </div>
                 </div>
                 <div>
-                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
-                    Videos
-                  </div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">Videos</div>
                   <div className="p-4">
                     <span className="text-center">No Videos found</span>
                   </div>
