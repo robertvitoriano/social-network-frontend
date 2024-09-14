@@ -44,7 +44,7 @@ export const ChatMessage = ({
           className="flex flex-col items-center justify-center w-fit"
           onClick={navigateToProfile}
         >
-          <img className="rounded-full w-20 h-20" src={receiver.avatar} />
+          <img className="rounded-full w-10 h-10" src={receiver.avatar} />
           <span>{receiver.name}</span>
         </div>
       )}
@@ -54,7 +54,7 @@ export const ChatMessage = ({
           "rounded-xl",
           "relative",
           "w-full",
-          "md:max-w-[600px]",
+          "sm:w-[100px]",
           { "text-black": message.isFromUser },
           { "bg-white": message.isFromUser },
           { "bg-black": !message.isFromUser },
@@ -96,7 +96,7 @@ export const ChatMessage = ({
           className="flex flex-col items-center justify-center w-fit"
           onClick={navigateToProfile}
         >
-          <img className="rounded-full w-20 h-20" src={loggedUser.avatar} />
+          <img className="rounded-full w-10 h-10" src={loggedUser.avatar} />
           <span>{loggedUser.username}</span>
         </div>
       )}

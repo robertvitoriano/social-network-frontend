@@ -181,7 +181,7 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
   }
 
   return (
-    <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-gray-800 text-white z-50">
+    <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-primary text-white z-50 rounded-md border border-white sm:max-w-72 sm:right-40 sm:top-auto sm:bottom-2 sm:h-96">
       {loading && <Spinner />}
       <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
         <h2 className="font-bold">Chat</h2>
@@ -189,9 +189,9 @@ export function ChatPopOver({ onClose, receiver }: ChatPopOverProps) {
           X
         </button>
       </div>
-      <div className="flex flex-1 p-4 flex-col gap-4">
+      <div className="flex h-full p-4 flex-col gap-4 justify-between">
         <div
-          className="flex w-full bg-primary flex-col h-[76vh] 2xl:h-[84vh] rounded-xl p-4 gap-4 overflow-auto"
+          className="flex bg-primary flex-col h-[75vh]  rounded-xl p-4 gap-4 overflow-auto sm:h-56"
           onScroll={handleScroll}
           ref={messagesContainerRef}
         >

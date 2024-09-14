@@ -94,8 +94,8 @@ export default function Chat() {
   }
   async function loadReceiver(userId: string) {
     try {
-      const profileResponse = await getProfile(userId);
-      setReceiver(profileResponse.data.profile);
+      const {data:{profile, friendshipId}}= await getProfile(userId);
+      setReceiver({...profile, friendshipId});
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
