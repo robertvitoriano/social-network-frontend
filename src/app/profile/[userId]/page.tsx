@@ -159,6 +159,10 @@ const UserProfile = () => {
       }
     }
   };
+
+  const handleChatDialogOpen = (friendId: string, friendshipId: string) => {
+    openChatDialog(friendId, friendshipId);
+  };
   if (loading) return <Spinner />;
 
   return (
@@ -269,7 +273,7 @@ const UserProfile = () => {
                 </div>
                 <div
                   className="bg-primary p-2 h-fit flex gap-4 rounded-md text-sm items-center cursor-pointer"
-                  onClick={() => openChatDialog(user.id, user.friendshipId!)}
+                  onClick={() => handleChatDialogOpen(user.id, user.friendshipId!)}
                 >
                   <MessageCircleMore />
                   Message

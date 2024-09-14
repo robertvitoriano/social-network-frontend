@@ -96,7 +96,6 @@ export function ChatPopOver() {
         const {
           data: { profile, friendshipId },
         } = await getProfile(userId);
-        console.log({ ...profile, friendshipId });
         setReceiver({ ...profile, friendshipId });
       }
     } catch (error) {

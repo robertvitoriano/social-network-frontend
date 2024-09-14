@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  MoreHorizontal,
-  Heart,
-  Share2,
-  MessageSquare,
-  SendHorizonal,
-} from "lucide-react";
+import { MoreHorizontal, Heart, Share2, MessageSquare, SendHorizonal } from "lucide-react";
 import { togglePostLike } from "@/api/toggle-post-like";
 import { Input } from "./ui/input";
 import { LoggedUser, useAuthStore } from "@/lib/store/authStore";
@@ -56,10 +50,7 @@ export function Post({ post }: Props) {
   const [commentsCount, setCommentscount] = useState(post.commentsCount);
   const [sharesCount, setSharescount] = useState(post.sharesCount || 0);
   const [newCommentContent, setNewCommentContent] = useState("");
-  const [lastComment, setLastComment] = useState<IComment | null>(
-    post.lastComment
-  );
-  console.log({ lastComment });
+  const [lastComment, setLastComment] = useState<IComment | null>(post.lastComment);
   const loggedUser = useAuthStore((state) => state.loggedUser);
 
   const router = useRouter();
@@ -93,17 +84,12 @@ export function Post({ post }: Props) {
     <div className="flex flex-col gap-4">
       <div>
         <div className="flex justify-between p-4">
-          <div
-            className="flex gap-4 items-center hover:underline cursor-pointer"
-            onClick={handlePostPageRedirect}
-          >
+          <div className="flex gap-4 items-center hover:underline cursor-pointer" onClick={handlePostPageRedirect}>
             <img src={post.user.avatar} className="h-12 w-12 rounded-full" />
             <div>
               <h2 className="text-base font-bold">{post.user.name}</h2>
               <h2 className="text-xs">
-                {new Date(post.createdAt).toLocaleDateString() +
-                  " - " +
-                  new Date(post.createdAt).toLocaleTimeString()}
+                {new Date(post.createdAt).toLocaleDateString() + " - " + new Date(post.createdAt).toLocaleTimeString()}
               </h2>
             </div>
           </div>
@@ -114,10 +100,10 @@ export function Post({ post }: Props) {
       <div className="flex justify-between px-2 pb-1">
         <div className="flex gap-1">
           <div
-            className={classNames(
-              "bg-red-500 rounded-full p-1 justify-center items-center",
-              { flex: likeCount > 0, hidden: likeCount == 0 }
-            )}
+            className={classNames("bg-red-500 rounded-full p-1 justify-center items-center", {
+              flex: likeCount > 0,
+              hidden: likeCount == 0,
+            })}
           >
             <Heart className={"w-4 h-4 fill-current text-white"} />
           </div>
@@ -129,20 +115,13 @@ export function Post({ post }: Props) {
               {commentsCount} comments
             </div>
           )}
-          {sharesCount > 0 && (
-            <div className="hover:underline">{sharesCount} share</div>
-          )}
+          {sharesCount > 0 && <div className="hover:underline">{sharesCount} share</div>}
         </div>
       </div>
       <div className="bg-primary rounded-md shadow-md p-4">
         <div className="flex justify-around text-white">
-          <div
-            className="flex items-center gap-2 cursor-pointer"
-            onClick={toggleLike}
-          >
-            <Heart
-              className={`w-5 h-5 ${liked ? "fill-current text-red-500" : ""}`}
-            />
+          <div className="flex items-center gap-2 cursor-pointer" onClick={toggleLike}>
+            <Heart className={`w-5 h-5 ${liked ? "fill-current text-red-500" : ""}`} />
             <span>Like</span>
           </div>
           <div className="flex items-center gap-2 cursor-pointer">
@@ -169,11 +148,7 @@ export function Post({ post }: Props) {
               onKeyDown={handleCommentCreationOneEnter}
             />
 
-            <SendHorizonal
-              className="mr-2"
-              size={40}
-              onClick={handleCommentCreation}
-            />
+            <SendHorizonal className="mr-2" size={40} onClick={handleCommentCreation} />
           </div>
         </div>
       </div>
