@@ -17,6 +17,8 @@ export const MessagesSideBar = ({ isMessageSidebarOpen, setIsMessageSidebarOpen 
   const setUserFriends = useFriendshipStore((state) => state.setUserFriends);
   const userFriends = useFriendshipStore((state) => state.userFriends);
   const openChatDialog = useChatStore((state) => state.openChatDialog);
+  const closeChatDialog = useChatStore((state) => state.closeChatDialog);
+  const isChatDialogOpen = useChatStore((state) => state.isChatDialogOpen);
 
   useEffect(() => {
     fetchUserFriends();
@@ -59,6 +61,10 @@ export const MessagesSideBar = ({ isMessageSidebarOpen, setIsMessageSidebarOpen 
   }
 
   async function handleChatOpen(friend: IUserFriend) {
+    if (isChatDialogOpen) {
+      closeChatDialog();
+      return;
+    }
     openChatDialog(friend.id, friend.friendshipId);
   }
 

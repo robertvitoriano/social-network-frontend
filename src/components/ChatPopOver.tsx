@@ -11,6 +11,7 @@ import socket from "@/api/websocket-service";
 import { EventType } from "@/enums/websocket-events";
 import { Spinner } from "./Spinner";
 import { getProfile } from "@/api/get-profile";
+import classNames from "classnames";
 
 export type Receiver = {
   id: string;
@@ -26,6 +27,8 @@ export function ChatPopOver() {
   const [messages, setMessages] = useState<any[]>([]);
   const loggedUser = useAuthStore((state) => state.loggedUser);
   const closeChatDialog = useChatStore((state) => state.closeChatDialog);
+  const isChatDialogOpen = useChatStore((state) => state.isChatDialogOpen);
+
   const friendId = useChatStore((state) => state.friendId);
   const friendshipId = useChatStore((state) => state.friendshipId);
 
@@ -51,32 +54,34 @@ export function ChatPopOver() {
   const timeToSendOpenChatEvent = 5000;
   let chatOpenTimerId: NodeJS.Timeout | null = null;
   useEffect(() => {
-    loadReceiver(friendId);
-    handleInitialLoad();
-    const handleUserTyping = () => setReceiverIsTyping(true);
-    const handleUserTypingStopped = () => setReceiverIsTyping(false);
-    const handleMessageReceived = (newMessage: object) => {
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-      setShouldScrollToBottom(true);
-    };
+    if (isChatDialogOpen) {
+      loadReceiver(friendId);
+      handleInitialLoad();
+      const handleUserTyping = () => setReceiverIsTyping(true);
+      const handleUserTypingStopped = () => setReceiverIsTyping(false);
+      const handleMessageReceived = (newMessage: object) => {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+        setShouldScrollToBottom(true);
+      };
 
-    socket.on(EventType.USER_TYPING, handleUserTyping);
-    socket.on(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
-    socket.on(EventType.MESSAGE_RECEIVED, handleMessageReceived);
-    sendChatOpenEvent();
-    chatOpenTimerId = setInterval(sendChatOpenEvent, timeToSendOpenChatEvent);
+      socket.on(EventType.USER_TYPING, handleUserTyping);
+      socket.on(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
+      socket.on(EventType.MESSAGE_RECEIVED, handleMessageReceived);
+      sendChatOpenEvent();
+      chatOpenTimerId = setInterval(sendChatOpenEvent, timeToSendOpenChatEvent);
 
-    return () => {
-      socket.off(EventType.USER_TYPING, handleUserTyping);
-      socket.off(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
-      socket.off(EventType.MESSAGE_RECEIVED, handleMessageReceived);
-      sendChatCloseEvent();
+      return () => {
+        socket.off(EventType.USER_TYPING, handleUserTyping);
+        socket.off(EventType.USER_TYPING_STOPPED, handleUserTypingStopped);
+        socket.off(EventType.MESSAGE_RECEIVED, handleMessageReceived);
+        sendChatCloseEvent();
 
-      if (chatOpenTimerId) {
-        clearInterval(chatOpenTimerId);
-      }
-    };
-  }, []);
+        if (chatOpenTimerId) {
+          clearInterval(chatOpenTimerId);
+        }
+      };
+    }
+  }, [isChatDialogOpen]);
 
   useEffect(() => {
     if (currentPage < totalPages && shouldLoadNextPageMessages) {
@@ -200,54 +205,85 @@ export function ChatPopOver() {
   }
 
   return (
-    <div className="fixed top-0 right-0 h-full w-full flex flex-col bg-primary text-white z-50 rounded-md border border-white sm:max-w-72 sm:right-40 sm:top-auto sm:bottom-2 sm:h-96">
-      {loading && <Spinner />}
-      <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
-        <img className="rounded-full w-10 h-10 sm:w-10 sm:h-10" src={receiver.avatar} />
-        <h2 className="font-bold">{receiver.name}</h2>
-        <button onClick={handleClose} className="text-white cursor-pointer">
-          X
-        </button>
-      </div>
-      <div className="flex h-full p-4 flex-col gap-4 justify-between">
-        <div
-          className="flex bg-primary flex-col h-[75vh]  rounded-xl p-4 gap-4 overflow-auto sm:h-56"
-          onScroll={handleScroll}
-          ref={messagesContainerRef}
-        >
-          {messages.length > 0 &&
-            messages.map((message, index) => (
-              <ChatMessage key={index} message={message} receiver={receiver} onClose={handleClose} />
-            ))}
-          {messages.length === 0 && (
-            <div className="flex flex-1 flex-col items-center justify-center gap-8">
-              <img className="rounded-full w-24 h-24" src={receiver.avatar} />
-              <span>Send a message to {receiver.name}</span>
+    <div
+      className={classNames(
+        "fixed",
+        "bottom-0",
+        "right-0",
+        "h-full",
+        "w-full",
+        "flex",
+        "flex-col",
+        "bg-primary",
+        "text-white",
+        "z-50",
+        "rounded-md",
+        "border",
+        "border-white",
+        "sm:max-w-72",
+        "sm:right-40",
+        "sm:top-auto",
+        "sm:bottom-2",
+        "sm:h-96",
+        "transform",
+        "transition-transform",
+        "duration-500",
+        "ease-out",
+        { "translate-y-full": !isChatDialogOpen, "translate-y-0": isChatDialogOpen }
+      )}
+    >
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <div className="flex justify-between items-center p-2 text-lg md:text-2xl md:p-4 bg-gray-900">
+            <img className="rounded-full w-10 h-10 sm:w-10 sm:h-10" src={receiver.avatar} />
+            <h2 className="font-bold">{receiver.name}</h2>
+            <button onClick={handleClose} className="text-white cursor-pointer">
+              X
+            </button>
+          </div>
+          <div className="flex h-full p-4 flex-col gap-4 justify-between">
+            <div
+              className="flex bg-primary flex-col h-[75vh]  rounded-xl p-4 gap-4 overflow-auto sm:h-56"
+              onScroll={handleScroll}
+              ref={messagesContainerRef}
+            >
+              {messages.length > 0 &&
+                messages.map((message, index) => (
+                  <ChatMessage key={index} message={message} receiver={receiver} onClose={handleClose} />
+                ))}
+              {messages.length === 0 && (
+                <div className="flex flex-1 flex-col items-center justify-center gap-8">
+                  <img className="rounded-full w-24 h-24" src={receiver.avatar} />
+                  <span>Send a message to {receiver.name}</span>
+                </div>
+              )}
+              <div ref={messagesEndRef}></div>
             </div>
-          )}
-          <div ref={messagesEndRef}></div>
-        </div>
-        {receiverIsTyping && (
-          <div className="absolute left-1/2 top-4 transform -translate-x-1/2 text-white text-bold">
-            <span>{receiver.name} is typing...</span>
+            {receiverIsTyping && (
+              <div className="absolute left-1/2 top-4 transform -translate-x-1/2 text-white text-bold">
+                <span>{receiver.name} is typing...</span>
+              </div>
+            )}
+            <div className="relative w-full h-fit">
+              <Input
+                className="bg-primary rounded-lg h-10 focus:outline-none focus:ring-0"
+                placeholder={`Send a message to ${receiver.name}`}
+                value={currentMessageContent}
+                onChange={handleUserTyping}
+                onKeyDown={handleKeyDown}
+              />
+              <div
+                onClick={handleSendMessage}
+                className="absolute flex top-0 right-0 bg-secondary text-white hover:bg-black cursor-pointer h-10 w-10 justify-center items-center border border-white rounded-lg"
+              >
+                <SendHorizontal />
+              </div>
+            </div>
           </div>
-        )}
-        <div className="relative w-full h-fit">
-          <Input
-            className="bg-primary rounded-lg h-10 focus:outline-none focus:ring-0"
-            placeholder={`Send a message to ${receiver.name}`}
-            value={currentMessageContent}
-            onChange={handleUserTyping}
-            onKeyDown={handleKeyDown}
-          />
-          <div
-            onClick={handleSendMessage}
-            className="absolute flex top-0 right-0 bg-secondary text-white hover:bg-black cursor-pointer h-10 w-10 justify-center items-center border border-white rounded-lg"
-          >
-            <SendHorizontal />
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   );
 }
