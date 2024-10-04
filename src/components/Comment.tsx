@@ -3,7 +3,7 @@ import { IComment } from "./Post";
 import { toggleCommentLike } from "@/api/toggle-comment-like";
 import classNames from "classnames";
 import { Heart, SendHorizonal } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, InputHTMLAttributes } from "react";
 import { Input } from "./ui/input";
 import { useAuthStore } from "@/lib/store/authStore";
 import { createPostComment } from "@/api/create-post-comment";
@@ -14,18 +14,18 @@ export const Comment = ({ comment }: Props) => {
   const [liked, setLiked] = useState<boolean>(!!comment.likesCount);
 
   const [likesCount, setLikesCount] = useState<number>(comment.likesCount);
-  const [isReplying, setisReplying] = useState<boolean>(false);
+  const [isReplying, setIsReplying] = useState<boolean>(false);
   const [newReplyContent, setNewReplyContent] = useState<string>("");
-  const [replies, setReplies] = useState<IComment[]>(comment.replies!);
+  const [replies, setReplies] = useState<IComment[]>(comment.replies! || []);
   const loggedUser = useAuthStore((state) => state.loggedUser);
-
+  const replyInputRef = useRef<HTMLInputElement | null>(null);
   const toggleLike = async () => {
     setLiked(!liked);
     setLikesCount(likesCount + (liked ? -1 : 1));
     await toggleCommentLike(comment.id!);
   };
   const handleReply = async () => {
-    setisReplying(false);
+    setIsReplying(false);
     setNewReplyContent("");
     setReplies([
       ...replies,
@@ -40,6 +40,13 @@ export const Comment = ({ comment }: Props) => {
       },
     ]);
     await createPostComment({ content: newReplyContent, postId: comment.postId, parentCommentId: comment.id });
+  };
+
+  const displayReplyInput = () => {
+    setIsReplying(true);
+    setTimeout(() => {
+      replyInputRef.current?.focus();
+    }, 0);
   };
 
   return (
@@ -76,7 +83,7 @@ export const Comment = ({ comment }: Props) => {
                   <div onClick={toggleLike} className="cursor-pointer">
                     Like
                   </div>
-                  <div className="cursor-pointer" onClick={() => setisReplying(true)}>
+                  <div className="cursor-pointer" onClick={displayReplyInput}>
                     Reply
                   </div>
                 </div>
@@ -94,8 +101,9 @@ export const Comment = ({ comment }: Props) => {
               placeholder="write a reply"
               onChange={(e) => setNewReplyContent(e.target.value)}
               value={newReplyContent}
+              ref={replyInputRef}
             />
-            <span className="cursor-pointer text-sm hover:underline" onClick={() => setisReplying(false)}>
+            <span className="cursor-pointer text-sm hover:underline" onClick={() => setIsReplying(false)}>
               cancel
             </span>
           </div>
