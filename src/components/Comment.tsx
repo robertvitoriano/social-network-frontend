@@ -6,6 +6,7 @@ import { Heart, SendHorizonal } from "lucide-react";
 import { use, useState } from "react";
 import { Input } from "./ui/input";
 import { useAuthStore } from "@/lib/store/authStore";
+import { createPostComment } from "@/api/create-post-comment";
 type Props = {
   comment: IComment;
 };
@@ -14,7 +15,7 @@ export const Comment = ({ comment }: Props) => {
 
   const [likesCount, setLikesCount] = useState<number>(comment.likesCount);
   const [isReplying, setisReplying] = useState<boolean>(false);
-
+  const [newReplyContent, setNewReplyContent] = useState<string>("");
   const loggedUser = useAuthStore((state) => state.loggedUser);
 
   const toggleLike = async () => {
@@ -22,7 +23,10 @@ export const Comment = ({ comment }: Props) => {
     setLikesCount(likesCount + (liked ? -1 : 1));
     await toggleCommentLike(comment.id!);
   };
-  console.log(comment);
+  const handleReply = async () => {
+    await createPostComment({ content: newReplyContent, postId: comment.postId, parentCommentId: comment.id });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-4 items-center">
@@ -70,12 +74,17 @@ export const Comment = ({ comment }: Props) => {
         <div className="flex gap-4">
           <img src={loggedUser.avatar} className="h-10 w-10 rounded-full" />
           <div className="flex-col w-full">
-            <Input className="bg-primary  text-white" placeholder="Write a comment..." value={"reply"} />
+            <Input
+              className="bg-primary  text-white"
+              placeholder="write a reply"
+              onChange={(e) => setNewReplyContent(e.target.value)}
+              value={newReplyContent}
+            />
             <span className="cursor-pointer text-sm hover:underline" onClick={() => setisReplying(false)}>
               cancel
             </span>
           </div>
-          <SendHorizonal className="mr-2" size={40} />
+          <SendHorizonal className="mr-2" size={40} onClick={handleReply} />
         </div>
       )}
       {comment.replies?.map((mockReply, index) => (
