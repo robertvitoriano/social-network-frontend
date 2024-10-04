@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import classNames from "classnames";
 export interface IComment {
   id?: string;
+  parentCommentId?: string;
   content: string;
   userId: string;
   postId: string;
@@ -81,78 +82,7 @@ export function Post({ post }: Props) {
   const handlePostPageRedirect = () => {
     router.push(`/post/${post.id}`);
   };
-  const mockReplies = [
-    {
-      id: "reply1",
-      content: "I totally agree with your point of view. It's spot on!",
-      userId: "user1",
-      postId: "post1",
-      createdAt: new Date("2023-10-01T12:34:56"),
-      likesCount: 15,
-      user: {
-        id: "user1",
-        email: "user1@example.com",
-        name: "John Doe",
-        avatar: loggedUser.avatar,
-      },
-    },
-    {
-      id: "reply2",
-      content: "I think you missed an important aspect of the discussion.",
-      userId: "user2",
-      postId: "post1",
-      createdAt: new Date("2023-10-02T09:24:12"),
-      likesCount: 8,
-      user: {
-        id: "user2",
-        email: "user2@example.com",
-        name: "Jane Smith",
-        avatar: loggedUser.avatar,
-      },
-    },
-    {
-      id: "reply3",
-      content: "This topic is really interesting, thanks for sharing!",
-      userId: "user3",
-      postId: "post2",
-      createdAt: new Date("2023-10-03T14:45:33"),
-      likesCount: 25,
-      user: {
-        id: "user3",
-        email: "user3@example.com",
-        name: "Alex Johnson",
-        avatar: loggedUser.avatar,
-      },
-    },
-    {
-      id: "reply4",
-      content: "I have a different take on this. Here's my perspective...",
-      userId: "user4",
-      postId: "post3",
-      createdAt: new Date("2023-10-04T11:12:05"),
-      likesCount: 12,
-      user: {
-        id: "user4",
-        email: "user4@example.com",
-        name: "Emily Davis",
-        avatar: loggedUser.avatar,
-      },
-    },
-    {
-      id: "reply5",
-      content: "Can you elaborate on your last point? It’s not clear to me.",
-      userId: "user5",
-      postId: "post2",
-      createdAt: new Date("2023-10-05T18:37:29"),
-      likesCount: 4,
-      user: {
-        id: "user5",
-        email: "user5@example.com",
-        name: "Michael Brown",
-        avatar: loggedUser.avatar,
-      },
-    },
-  ];
+
   return (
     <div className="flex flex-col gap-4">
       <div>
@@ -207,9 +137,9 @@ export function Post({ post }: Props) {
           </div>
         </div>
         <div className="p-4 flex flex-col gap-4">
-          {lastComment && <Comment comment={{ replies: mockReplies, ...lastComment }} />}
+          {lastComment && <Comment comment={lastComment} />}
           {post.comments?.map((comment) => (
-            <Comment comment={{ replies: mockReplies, ...comment }} />
+            <Comment comment={comment} />
           ))}
           <div className="flex gap-4">
             <img src={loggedUser.avatar} className="h-10 w-10 rounded-full" />

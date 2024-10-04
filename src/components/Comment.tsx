@@ -3,7 +3,7 @@ import { IComment } from "./Post";
 import { toggleCommentLike } from "@/api/toggle-comment-like";
 import classNames from "classnames";
 import { Heart, SendHorizonal } from "lucide-react";
-import { use, useState } from "react";
+import { useState } from "react";
 import { Input } from "./ui/input";
 import { useAuthStore } from "@/lib/store/authStore";
 import { createPostComment } from "@/api/create-post-comment";
@@ -16,6 +16,7 @@ export const Comment = ({ comment }: Props) => {
   const [likesCount, setLikesCount] = useState<number>(comment.likesCount);
   const [isReplying, setisReplying] = useState<boolean>(false);
   const [newReplyContent, setNewReplyContent] = useState<string>("");
+  const [replies, setReplies] = useState<IComment[]>(comment.replies!);
   const loggedUser = useAuthStore((state) => state.loggedUser);
 
   const toggleLike = async () => {
@@ -24,6 +25,20 @@ export const Comment = ({ comment }: Props) => {
     await toggleCommentLike(comment.id!);
   };
   const handleReply = async () => {
+    setisReplying(false);
+    setNewReplyContent("");
+    setReplies([
+      ...replies,
+      {
+        content: newReplyContent,
+        postId: comment.postId,
+        parentCommentId: comment.id,
+        likesCount: 0,
+        user: loggedUser,
+        userId: loggedUser.id,
+        createdAt: new Date(),
+      },
+    ]);
     await createPostComment({ content: newReplyContent, postId: comment.postId, parentCommentId: comment.id });
   };
 
@@ -87,7 +102,7 @@ export const Comment = ({ comment }: Props) => {
           <SendHorizonal className="mr-2" size={40} onClick={handleReply} />
         </div>
       )}
-      {comment.replies?.map((mockReply, index) => (
+      {replies?.map((mockReply, index) => (
         <div className="pl-4">
           <Comment comment={mockReply} key={index} />
         </div>
