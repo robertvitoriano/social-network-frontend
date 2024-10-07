@@ -25,13 +25,22 @@ export const Comment = ({ comment }: Props) => {
     await toggleCommentLike(comment.id!);
   };
   const handleReply = async () => {
+    console.log({
+      content: newReplyContent,
+      postId: comment.postId || comment.post_id,
+      parentCommentId: comment.id,
+      likesCount: 0,
+      user: loggedUser,
+      userId: loggedUser.id,
+      createdAt: new Date(),
+    });
     setIsReplying(false);
     setNewReplyContent("");
     setReplies([
       ...replies,
       {
         content: newReplyContent,
-        postId: comment.postId,
+        postId: comment.postId || comment.post_id,
         parentCommentId: comment.id,
         likesCount: 0,
         user: loggedUser,
@@ -39,7 +48,11 @@ export const Comment = ({ comment }: Props) => {
         createdAt: new Date(),
       },
     ]);
-    await createPostComment({ content: newReplyContent, postId: comment.postId, parentCommentId: comment.id });
+    await createPostComment({
+      content: newReplyContent,
+      postId: comment.postId || comment.post_id,
+      parentCommentId: comment.id,
+    });
   };
 
   const displayReplyInput = () => {
@@ -110,9 +123,9 @@ export const Comment = ({ comment }: Props) => {
           <SendHorizonal className="mr-2" size={40} onClick={handleReply} />
         </div>
       )}
-      {replies?.map((mockReply, index) => (
+      {replies?.map((reply, index) => (
         <div className="pl-4">
-          <Comment comment={mockReply} key={index} />
+          <Comment comment={reply} key={index} />
         </div>
       ))}
     </div>
