@@ -27,7 +27,7 @@ export const Comment = ({ comment }: Props) => {
   const handleReply = async () => {
     console.log({
       content: newReplyContent,
-      postId: comment.postId || comment.post_id,
+      postId: comment.postId,
       parentCommentId: comment.id,
       likesCount: 0,
       user: loggedUser,
@@ -40,7 +40,7 @@ export const Comment = ({ comment }: Props) => {
       ...replies,
       {
         content: newReplyContent,
-        postId: comment.postId || comment.post_id,
+        postId: comment.postId,
         parentCommentId: comment.id,
         likesCount: 0,
         user: loggedUser,
@@ -50,7 +50,7 @@ export const Comment = ({ comment }: Props) => {
     ]);
     await createPostComment({
       content: newReplyContent,
-      postId: comment.postId || comment.post_id,
+      postId: comment.postId,
       parentCommentId: comment.id,
     });
   };

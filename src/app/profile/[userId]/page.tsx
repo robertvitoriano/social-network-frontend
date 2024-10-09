@@ -9,7 +9,7 @@ import { MessageCircleMore, UserCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { IPost, Post } from "@/components/Post";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { listUserFeedPosts } from "@/api/list-user-timeline-posts";
+import { listUserTimelinePosts } from "@/api/list-user-timeline-posts";
 import { Button } from "@/components/ui/button";
 import { createUserPost } from "@/api/create-user-post";
 import { DrawerDialog } from "@/components/DrawerDialog";
@@ -43,7 +43,7 @@ const UserProfile = () => {
 
   const loadProfile = async (userId: string) => {
     try {
-      const userPostsResponse = await listUserFeedPosts(userId);
+      const userPostsResponse = await listUserTimelinePosts(userId);
       setPosts([...posts, ...userPostsResponse.data.posts]);
       if (loggedUser.id) {
         if (userId === loggedUser.id) {

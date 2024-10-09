@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { sendFriendshipRequest } from "@/api/send-friendship-request";
 import { useAuthStore } from "@/lib/store/authStore";
-import { Send, Clock, User } from "lucide-react";
-import { FriendshipStatus } from "@/enums/friendship-status";
-import { sendFriendshipResponse } from "@/api/send-friendship-response";
-import { useFriendshipStore } from "@/lib/store/friendshipStore";
-import { toast } from "sonner";
 import { useMainStore } from "@/lib/store/mainStore";
 import { Spinner } from "@/components/Spinner";
 import { useBeforeUnload } from "@/lib/hooks/useBeforeUnload";
@@ -19,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createUserPost } from "@/api/create-user-post";
 import { FriendshipSuggestions } from "@/components/FriendshipSugestions";
-import { listUserFeedPosts } from "@/api/list-user-timeline-posts";
+import { listUserFeedPosts } from "@/api/get-feed-posts";
 
 export default function Home() {
   const [newPostContent, setNewPostContent] = useState<string>("");
@@ -103,10 +97,7 @@ export default function Home() {
           <div>
             <div className="mt-4 p-4 flex flex-col gap-4">
               <div className="flex gap-4">
-                <img
-                  src={loggedUser.avatar}
-                  className="h-14 w-14 rounded-full"
-                />
+                <img src={loggedUser.avatar} className="h-14 w-14 rounded-full" />
                 <Input
                   className="bg-primary h-14 text-white"
                   placeholder={"Tell your friends what you think!"}
