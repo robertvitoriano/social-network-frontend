@@ -18,32 +18,32 @@ const Profile = () => {
   }>();
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loading, setLoading] = useState<boolean>();
-  const params = useParams<{ userId: string }>();
+  const params = useParams<{ handle: string }>();
 
   useEffect(() => {
-    const userId = params.userId;
-    if (userId) {
-      loadProfile(userId);
+    const handle = params.handle;
+    if (handle) {
+      loadProfile(handle);
     }
   }, []);
 
-  const loadProfile = async (userId: string) => {
+  const loadProfile = async (handle: string) => {
     try {
-      const userPostsResponse = await listUserTimelinePosts(userId);
+      const userPostsResponse = await listUserTimelinePosts(handle);
 
       setPosts([...posts, ...userPostsResponse.data.posts]);
 
-      await setFriendProfile(userId);
+      await setFriendProfile(handle);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
       setLoading(false);
     }
   };
-  const setFriendProfile = async (userId: string) => {
+  const setFriendProfile = async (handle: string) => {
     const {
       data: { profile, friendshipId, avatar, cover },
-    } = await getProfile(userId);
+    } = await getProfile(handle);
     setUser({ ...profile, friendshipId: friendshipId });
   };
 
@@ -95,13 +95,17 @@ const Profile = () => {
             <TabsContent value="media">
               <div className="flex flex-col gap-4">
                 <div>
-                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">Photos</div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
+                    Photos
+                  </div>
                   <div className="p-4">
                     <span className="text-center">No photos found</span>
                   </div>
                 </div>
                 <div>
-                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">Videos</div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
+                    Videos
+                  </div>
                   <div className="p-4">
                     <span className="text-center">No Videos found</span>
                   </div>

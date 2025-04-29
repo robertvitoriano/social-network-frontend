@@ -18,8 +18,13 @@ import { useAuthStore } from "@/lib/store/authStore";
 import { useChatStore } from "@/lib/store/chatStore";
 
 const UserProfile = () => {
-  const params = useParams<{ userId: string }>();
-  const [user, setUser] = useState<{ id: string; name: string; avatar: string; friendshipId?: string }>();
+  const params = useParams<{ handle: string }>();
+  const [user, setUser] = useState<{
+    id: string;
+    name: string;
+    avatar: string;
+    friendshipId?: string;
+  }>();
   const [avatarUrl, setAvatarUrl] = useState("");
   const [coverUrl, setCoverUrl] = useState("");
   const [loading, setLoading] = useState(true);
@@ -35,38 +40,41 @@ const UserProfile = () => {
   const openChatDialog = useChatStore((state) => state.openChatDialog);
 
   useEffect(() => {
-    const userId = params.userId;
-    if (userId) {
-      loadProfile(userId);
+    const handle = params.handle;
+    if (handle) {
+      loadProfile(handle);
     }
   }, [params, loggedUser]);
 
-  const loadProfile = async (userId: string) => {
+  const loadProfile = async (handle: string) => {
     try {
-      const userPostsResponse = await listUserTimelinePosts(userId);
-      setPosts([...posts, ...userPostsResponse.data.posts]);
-      if (loggedUser.id) {
-        if (userId === loggedUser.id) {
-          setUser(loggedUser);
-          setAvatarUrl(loggedUser.avatar);
-          setCoverUrl(loggedUser.cover);
-          setIsLoggedUserProfile(true);
+      const isLogged = !!loggedUser?.id;
+      if (isLogged) {
+        const userPostsResponse = await listUserTimelinePosts(handle);
+        setPosts([...posts, ...userPostsResponse.data.posts]);
+        if (loggedUser.id) {
+          if (handle === loggedUser.id || handle == loggedUser.username) {
+            setUser(loggedUser);
+            setAvatarUrl(loggedUser.avatar);
+            setCoverUrl(loggedUser.cover);
+            setIsLoggedUserProfile(true);
+            return;
+          }
+          await setFriendProfile(handle);
           return;
         }
-        await setFriendProfile(userId);
-        return;
       }
-      await setFriendProfile(userId);
+      await setFriendProfile(handle);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
       setLoading(false);
     }
   };
-  const setFriendProfile = async (userId: string) => {
+  const setFriendProfile = async (handle: string) => {
     const {
       data: { profile, friendshipId, avatar, cover },
-    } = await getProfile(userId);
+    } = await getProfile(handle);
     setUser({ ...profile, friendshipId: friendshipId });
     setAvatarUrl(profile.avatar);
     setCoverUrl(profile.cover);
@@ -81,7 +89,7 @@ const UserProfile = () => {
       const currentTime = new Date();
       setPosts([
         {
-          id: params.userId,
+          id: params.handle,
           content: newPostContent,
           createdAt: currentTime.toISOString(),
           likesCount: 0,
@@ -100,7 +108,7 @@ const UserProfile = () => {
       ]);
       await createUserPost({
         content: newPostContent,
-        timelinedOwnerId: params.userId,
+        timelinedOwnerId: params.handle,
       });
 
       setNewPostContent("");
@@ -317,13 +325,17 @@ const UserProfile = () => {
             <TabsContent value="media">
               <div className="flex flex-col gap-4">
                 <div>
-                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">Photos</div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
+                    Photos
+                  </div>
                   <div className="p-4">
                     <span className="text-center">No photos found</span>
                   </div>
                 </div>
                 <div>
-                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">Videos</div>
+                  <div className="p-4 text-2xl font-bold bg-primary rounded-lg text-center w-full">
+                    Videos
+                  </div>
                   <div className="p-4">
                     <span className="text-center">No Videos found</span>
                   </div>
