@@ -1,13 +1,13 @@
-import io from "socket.io-client";
-//@ts-ignore
-const socket = io(process.env.NEXT_PUBLIC_API_URL);
+import io from "socket.io-client"
+
+const socket = io(process.env.NEXT_PUBLIC_API_URL as string)
 
 socket.on("connect", () => {
-  console.log("Connected to WebSocket server");
-});
+  console.log("Connected to WebSocket server")
+})
 
 socket.on("disconnect", () => {
-  console.log("Disconnected from WebSocket server");
-});
+  console.log("Disconnected from WebSocket server")
+})
 
-export default socket;
+export default socket
