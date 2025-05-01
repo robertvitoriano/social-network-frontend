@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Camera } from "lucide-react";
 import React, { useEffect, useState, useRef } from "react";
 import { getProfile } from "@/api/get-profile";
@@ -46,6 +46,8 @@ const UserProfile = () => {
     }
   }, [params, loggedUser]);
 
+  const router = useRouter();
+
   const loadProfile = async (handle: string) => {
     try {
       const userPostsResponse = await listUserTimelinePosts(handle);
@@ -76,6 +78,11 @@ const UserProfile = () => {
     setCoverUrl(profile.cover);
   };
   const handlePostCreation = async () => {
+    if (!loggedUser?.id) {
+      navigateToLoginWithRedirect();
+      return;
+    }
+
     if (!newPostContent.trim()) {
       console.error("Cannot create a post with empty content.");
       return;
@@ -166,6 +173,11 @@ const UserProfile = () => {
 
   const handleChatDialogOpen = (friendId: string, friendshipId: string) => {
     openChatDialog(friendId, friendshipId);
+  };
+  const navigateToLoginWithRedirect = () => {
+    router.push(`/auth/sign-in`);
+
+    localStorage.setItem("redirectUrl", location.pathname);
   };
   if (loading) return <Spinner />;
 
