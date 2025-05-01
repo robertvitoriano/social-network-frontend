@@ -48,30 +48,26 @@ const UserProfile = () => {
 
   const loadProfile = async (handle: string) => {
     try {
+      const userPostsResponse = await listUserTimelinePosts(handle);
+      setPosts([...posts, ...userPostsResponse.data.posts]);
+      await setUserProfile(handle);
+
       const isLogged = !!loggedUser?.id;
-      if (isLogged) {
-        const userPostsResponse = await listUserTimelinePosts(handle);
-        setPosts([...posts, ...userPostsResponse.data.posts]);
-        if (loggedUser.id) {
-          if (handle === loggedUser.id || handle == loggedUser.username) {
-            setUser(loggedUser);
-            setAvatarUrl(loggedUser.avatar);
-            setCoverUrl(loggedUser.cover);
-            setIsLoggedUserProfile(true);
-            return;
-          }
-          await setFriendProfile(handle);
-          return;
-        }
+
+      if (isLogged && (handle === loggedUser.id || handle == loggedUser.username)) {
+        setUser(loggedUser);
+        setAvatarUrl(loggedUser.avatar);
+        setCoverUrl(loggedUser.cover);
+        setIsLoggedUserProfile(true);
+        return;
       }
-      await setFriendProfile(handle);
     } catch (error) {
       console.error("Error fetching user profile:", error);
     } finally {
       setLoading(false);
     }
   };
-  const setFriendProfile = async (handle: string) => {
+  const setUserProfile = async (handle: string) => {
     const {
       data: { profile, friendshipId, avatar, cover },
     } = await getProfile(handle);
